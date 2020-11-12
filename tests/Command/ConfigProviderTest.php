@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JoistTest\Command;
 
 use Joist\Command\ConfigProvider;
+use Joist\Command\Hello;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
@@ -13,9 +14,11 @@ final class ConfigProviderTest extends TestCase
     {
         $objectUnderTest = new ConfigProvider();
 
-        $expectedCommands = [];
+        $expectedCommands = [
+            new Hello()
+        ];
         $actualCommands = $objectUnderTest();
 
-        self::assertSame($expectedCommands, $actualCommands);
+        self::assertEquals($expectedCommands, $actualCommands);
     }
 }
