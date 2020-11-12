@@ -6,7 +6,8 @@ namespace Joist\Lexer;
 
 use JsonSerializable;
 
-class Token implements JsonSerializable {
+class Token implements JsonSerializable
+{
     private string $type;
 
     private string $lexeme;

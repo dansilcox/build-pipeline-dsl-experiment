@@ -12,6 +12,9 @@ class Lexer
 
     private ?string $lastError;
 
+    /**
+     * @var array<string, Token>
+     */
     private array $tokenisedOutput = [];
 
     public function __construct(?string $srcFilePath = null)
@@ -51,6 +54,7 @@ class Lexer
 
         foreach ($lines as $lineNumber => $line) {
             $tokens = $this->getTokensPerLine($line, $lineNumber);
+            /** @var string $uniqueId => Token $token */
             foreach ($tokens as $uniqueId => $token) {
                 $this->tokenisedOutput[$uniqueId] = $token;
             }
@@ -59,9 +63,17 @@ class Lexer
         return true;
     }
 
+    /**
+     * @var array<string, array>
+     */
     public function getTokenisedOutput(): array
     {
-        return ['tokens' => array_map([$this, 'jsonSerializeToken'], array_values($this->tokenisedOutput))];
+        return [
+            'tokens' => array_map(
+                [$this, 'jsonSerializeToken'],
+                array_values($this->tokenisedOutput)
+            )
+        ];
     }
 
     public function getLastError(): ?string
@@ -69,7 +81,10 @@ class Lexer
         return $this->lastError;
     }
 
-    private function getTokensPerLine(string $line, int $lineNumber): ?array
+    /**
+     * @var array<string, Token>
+     */
+    private function getTokensPerLine(string $line, int $lineNumber): array
     {
         $lexemes = [
             TokenType::FILE_HEADER  => Lexeme::FILE_HEADER,
@@ -85,6 +100,7 @@ class Lexer
         foreach ($lexemes as $type => $lexeme) {
             $lexemes = $lexeme;
             $chosenLexeme = null;
+            $position = null;
             if (!is_array($lexeme)) {
                 $lexemes = [$lexeme];
             }
@@ -96,7 +112,7 @@ class Lexer
                 }
             }
 
-            if ($chosenLexeme === null) {
+            if ($chosenLexeme === null || $position === null) {
                 // Skip lexeme set altogether if still no match
                 continue;
             }
@@ -121,7 +137,7 @@ class Lexer
                 $literal
             );
         }
-        
+
         return $tokens;
     }
 

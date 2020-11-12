@@ -72,7 +72,7 @@ final class LexerTest extends TestCase
         self::assertFileExists($tempFile);
 
         $objectUnderTest = new Lexer($tempFile);
-        
+
         unlink($tempFile);
         self::assertFileDoesNotExist($tempFile);
 
@@ -134,7 +134,7 @@ EOF,
 
         $source = file_get_contents($this->tokenisedFilePath) ?: '';
         self::assertJson($source);
-        
+
         return json_decode($source, true, 512, JSON_THROW_ON_ERROR);
     }
 }

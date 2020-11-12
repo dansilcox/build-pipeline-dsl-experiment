@@ -6,7 +6,8 @@ namespace Joist\Lexer;
 
 use JsonSerializable;
 
-class Location implements JsonSerializable {
+class Location implements JsonSerializable
+{
     private int $line;
 
     private int $col;
