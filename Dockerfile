@@ -1,6 +1,6 @@
 FROM php:7.4-cli
 
-RUN apt-get update && apt-get install -y git nano wget unzip zip
+RUN apt-get update && apt-get install -y nano wget unzip zip
 
 VOLUME [ "/app" ]
 
