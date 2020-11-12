@@ -1,0 +1,11 @@
+# Cache files
+.phpunit.cache
+
+# Secrets / user-specific configuration
+config/git-auth-config.json
+config/github-token
+config/.env
+
+# Vendor/packages
+vendor/
+

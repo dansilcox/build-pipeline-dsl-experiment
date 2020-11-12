@@ -1,0 +1,38 @@
+{
+    "name": "joist/joist",
+    "description": "Build DSL experiment",
+    "type": "project",
+    "scripts": {
+        "fix": "vendor/bin/phpcbf src tests",
+        "phpcs": "vendor/bin/phpcs src tests",
+        "test": "vendor/bin/phpunit -c phpunit.xml",
+        "stan": "vendor/bin/phpstan analyse src tests",
+        "check": [
+            "@phpcs",
+            "@test",
+            "@stan"
+        ]
+    },
+    "require": {
+        "symfony/console": "^5.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^0.12",
+        "roave/security-advisories": "dev-master",
+        "squizlabs/php_codesniffer": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Joist\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JoistTest\\": "tests/"
+        }
+    },
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

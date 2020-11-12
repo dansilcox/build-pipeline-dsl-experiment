@@ -1,0 +1,54 @@
+##joist
+
+// This block is used to set up the pipeline configuration
+// Use the format <identifier>: <type>
+// Special type enum is provided as an array of options (which must be the same type - either string or int)
+config {
+  scmUrl: string
+  projectName: string
+  version: string
+  targetEnvironment: enum[
+    'dev'
+    'test'
+    'preprod'
+    'prod'
+  ]
+  action: enum[
+    'build'
+    'deploy'
+    'rollback'
+  ]
+}
+
+// stage(<name>, (<conditions to run>) { 
+// ... steps  
+// })
+stage('Set up environment', (always)) {
+  targetVersion = '${config.projectName}-${config.version}'
+}
+
+stage('Build', (action == 'build')) {
+  sh('./scripts/build.sh ${targetEnvironment} ${targetVersion}')
+}
+
+stage('Test', (action == 'build')) {
+  sh('./scripts/test.sh')
+}
+
+stage('Publish artifact', (action == 'build')) {
+  sh('./scripts/create-artifact.sh ${targetEnvironment} ${targetVersion}')
+
+  sh('./scripts/push-artifact.sh ${targetEnvironment} ${targetVersion}')
+}
+
+stage('Deploy', (action == 'deploy')) {
+  sh('./scripts/deploy.sh ${targetEnvironment} ${targetVersion}')
+}
+
+stage('Roll back', (action == 'rollback')) {
+  sh('./scripts/rollback.sh ${targetEnvironment}')
+}
+
+stage('Notify', (always)) {
+  sh('./scripts/notify-slack.sh ${projectName} ${action} ${targetEnvironment} ${targetVersion})
+}
