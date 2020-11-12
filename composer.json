@@ -2,6 +2,9 @@
     "name": "joist/joist",
     "description": "Build DSL experiment",
     "type": "project",
+    "bin": [
+        "bin/joist"
+    ],
     "scripts": {
         "fix": "vendor/bin/phpcbf src tests",
         "phpcs": "vendor/bin/phpcs src tests",
@@ -17,7 +20,7 @@
         "symfony/console": "^5.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.4",
         "phpstan/phpstan": "^0.12",
         "roave/security-advisories": "dev-master",
         "squizlabs/php_codesniffer": "^4.0"
