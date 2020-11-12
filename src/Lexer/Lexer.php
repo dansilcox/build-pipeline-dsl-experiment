@@ -6,12 +6,14 @@ namespace Joist\Lexer;
 
 use Joist\Exception\LexerException;
 
-class Lexer {
+class Lexer
+{
     private ?string $srcFilePath;
 
     private ?string $lastError;
-    
-    public function __construct(?string $srcFilePath = null) {
+
+    public function __construct(?string $srcFilePath = null)
+    {
         $this->validateSrcFilePath($srcFilePath);
 
         $this->srcFilePath = $srcFilePath;
@@ -21,7 +23,7 @@ class Lexer {
     {
         $this->validateSrcFilePath($this->srcFilePath);
 
-        $string = file_get_contents($this->srcFilePath);
+        $string = file_get_contents($this->srcFilePath) ?: '';
         return $this->tokeniseFromString($string);
     }
 
@@ -30,13 +32,17 @@ class Lexer {
         // Reset 'last error' for a fresh tokenisation run
         $this->lastError = null;
 
+        if ($sourceString === '') {
+            $this->lastError = 'Cannot tokenise empty string';
+            return false;
+        }
         $lines = array_values(array_filter(array_map(
-            [$this, 'trimWhitespaceAndComments'], 
+            [$this, 'trimWhitespaceAndComments'],
             explode("\n", $sourceString)
         )));
-        
+
         if (strpos((string) $lines[0], Token::FILE_HEADER) === false) {
-            $this->lastError = 'Expected ' . TOKEN::FILE_HEADER . ' header, none found';
+            $this->lastError = 'Expected ' . Token::FILE_HEADER . ' header, none found';
             return false;
         }
 
@@ -54,7 +60,7 @@ class Lexer {
     private function validateSrcFilePath(?string $srcFilePath): void
     {
         if ($srcFilePath !== null && !file_exists($srcFilePath)) {
-          throw new LexerException('Source file not found: ' . $srcFilePath);
+            throw new LexerException('Source file not found: ' . $srcFilePath);
         }
     }
 

@@ -30,9 +30,9 @@ final class LexerTest extends TestCase
     public function testTokeniseFromString(): void
     {
         $objectUnderTest = new Lexer();
-        
+
         self::assertFileExists($this->joistSrcFilePath);
-        $joistSrc = file_get_contents($this->joistSrcFilePath);
+        $joistSrc = $this->getSourceFromFile();
 
         self::assertTrue($objectUnderTest->tokeniseFromString($joistSrc));
     }
@@ -57,8 +57,8 @@ final class LexerTest extends TestCase
         self::assertFalse($objectUnderTest->tokeniseFromString($joistSrcBad));
         self::assertSame('Expected ##joist header, none found', $objectUnderTest->getLastError());
 
-        $joistSrcGood = file_get_contents($this->joistSrcFilePath);
-        
+        $joistSrcGood = $this->getSourceFromFile();
+
         self::assertTrue($objectUnderTest->tokeniseFromString($joistSrcGood));
         self::assertNull($objectUnderTest->getLastError());
     }
@@ -80,7 +80,7 @@ final class LexerTest extends TestCase
     /**
      * @var string $input
      * @var string $expectedMessage
-     * 
+     *
      * @dataProvider invalidTokenDataProvider
      */
     public function testTokeniseFromStringParseError(string $input, string $expectedMessage): void
@@ -91,9 +91,16 @@ final class LexerTest extends TestCase
         self::assertSame($expectedMessage, $objectUnderTest->getLastError());
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function invalidTokenDataProvider(): array
     {
         return [
+            'Blank source string' => [
+                '',
+                'Cannot tokenise empty string'
+            ],
             'Missing ##joist header' => [
               <<<EOF
 // This is valid - but missing the ##joist header
@@ -104,5 +111,10 @@ EOF,
               'Expected ##joist header, none found'
             ]
         ];
+    }
+
+    private function getSourceFromFile(): string
+    {
+        return file_get_contents($this->joistSrcFilePath) ?: '';
     }
 }

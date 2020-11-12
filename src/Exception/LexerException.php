@@ -6,5 +6,6 @@ namespace Joist\Exception;
 
 use UnexpectedValueException as SplUnexpectedValueException;
 
-class LexerException extends SplUnexpectedValueException {
+class LexerException extends SplUnexpectedValueException
+{
 }
