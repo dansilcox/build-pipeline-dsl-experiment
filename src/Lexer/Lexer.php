@@ -12,6 +12,8 @@ class Lexer
 
     private ?string $lastError;
 
+    private array $tokenisedOutput = [];
+
     public function __construct(?string $srcFilePath = null)
     {
         $this->validateSrcFilePath($srcFilePath);
@@ -36,22 +38,96 @@ class Lexer
             $this->lastError = 'Cannot tokenise empty string';
             return false;
         }
+
         $lines = array_values(array_filter(array_map(
             [$this, 'trimWhitespaceAndComments'],
             explode("\n", $sourceString)
         )));
 
-        if (strpos((string) $lines[0], Token::FILE_HEADER) === false) {
-            $this->lastError = 'Expected ' . Token::FILE_HEADER . ' header, none found';
+        if (strpos((string) $lines[0], Lexeme::FILE_HEADER) === false) {
+            $this->lastError = 'Expected ' . Lexeme::FILE_HEADER . '"<version>" header, none found';
             return false;
+        }
+
+        foreach ($lines as $lineNumber => $line) {
+            $tokens = $this->getTokensPerLine($line, $lineNumber);
+            foreach ($tokens as $uniqueId => $token) {
+                $this->tokenisedOutput[$uniqueId] = $token;
+            }
         }
 
         return true;
     }
 
+    public function getTokenisedOutput(): array
+    {
+        return ['tokens' => array_map([$this, 'jsonSerializeToken'], array_values($this->tokenisedOutput))];
+    }
+
     public function getLastError(): ?string
     {
         return $this->lastError;
+    }
+
+    private function getTokensPerLine(string $line, int $lineNumber): ?array
+    {
+        $lexemes = [
+            TokenType::FILE_HEADER  => Lexeme::FILE_HEADER,
+            TokenType::STRING       => Lexeme::STRING,
+            TokenType::KEYWORD      => Lexeme::KEYWORDS,
+            TokenType::BRACKET_OPEN => Lexeme::BRACKET_OPEN,
+        ];
+        $typesWithLiterals = [
+            TokenType::STRING
+        ];
+
+        $tokens = [];
+        foreach ($lexemes as $type => $lexeme) {
+            $lexemes = $lexeme;
+            $chosenLexeme = null;
+            if (!is_array($lexeme)) {
+                $lexemes = [$lexeme];
+            }
+            $literal = null;
+            foreach ($lexemes as $lex) {
+                $position = strpos($line, $lex);
+                if ($position !== false) {
+                    $chosenLexeme = $lex;
+                }
+            }
+
+            if ($chosenLexeme === null) {
+                // Skip lexeme set altogether if still no match
+                continue;
+            }
+            if (in_array($type, $typesWithLiterals, true)) {
+                $subLine = substr($line, $position + 1);
+                $endPosition = strpos($subLine, $chosenLexeme);
+                if ($endPosition !== false) {
+                    $literal = substr($subLine, 0, $endPosition);
+                }
+            }
+            $location = new Location($lineNumber + 1, $position + 1, strlen($chosenLexeme));
+            $uniqueId = "$lineNumber.$position.$type";
+            if (isset($this->tokenisedOutput[$uniqueId])) {
+                // Got this token, onto the next
+                continue;
+            }
+
+            $tokens[$uniqueId] = new Token(
+                $type,
+                $chosenLexeme,
+                $location,
+                $literal
+            );
+        }
+        
+        return $tokens;
+    }
+
+    private function jsonSerializeToken(Token $token): array
+    {
+        return $token->jsonSerialize();
     }
 
     /**
@@ -69,7 +145,7 @@ class Lexer
      */
     private function trimWhitespaceAndComments(string $line): string
     {
-        $lineParts = explode('//', trim($line));
+        $lineParts = explode(Lexeme::LINE_COMMENT, trim($line));
         return $lineParts[0] ?? '';
     }
 }

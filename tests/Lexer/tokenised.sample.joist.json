@@ -1,0 +1,44 @@
+{
+  "tokens": [
+    {
+      "type": "FILE_HEADER",
+      "lexeme": "##joist:",
+      "literal": null,
+      "location": {
+        "line": 1,
+        "col": 1,
+        "length": 8
+      }
+    },
+    {
+      "type": "STRING",
+      "lexeme": "\"",
+      "literal": "0.1.0",
+      "location": {
+        "line": 1,
+        "col": 9,
+        "length": 1
+      }
+    },
+    {
+      "type": "KEYWORD",
+      "lexeme": "config",
+      "literal": null,
+      "location": {
+        "line": 2,
+        "col": 1,
+        "length": 6
+      }
+    },
+    {
+      "type": "BRACKET_OPEN",
+      "lexeme": "{",
+      "literal": null,
+      "location": {
+        "line": 2,
+        "col": 8,
+        "length": 1
+      }
+    }
+  ]
+}

@@ -4,23 +4,52 @@ declare(strict_types=1);
 
 namespace Joist\Lexer;
 
-class Token
-{
-    public const FILE_HEADER = '##joist';
+use JsonSerializable;
 
-    public const LINE_COMMENT = '//';
+class Token implements JsonSerializable {
+    private string $type;
 
-    public const WHITESPACE = [' ', "\r", "\t"];
+    private string $lexeme;
 
-    public const ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', '*'];
+    private Location $location;
 
-    public const ONE_OR_TWO_CHAR_LEX = ['!', '=', '>', '<'];
+    private ?string $literal;
 
-    public const KEYWORD = [
-        'stage',
-        'config',
-        'enum',
-        'always',
-        'sh'
-    ];
+    public function __construct(string $type, string $lexeme, Location $location, ?string $literal = null)
+    {
+        $this->type = $type;
+        $this->lexeme = $lexeme;
+        $this->location = $location;
+        $this->literal = $literal;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getLexeme(): string
+    {
+        return $this->lexeme;
+    }
+
+    public function getLocation(): Location
+    {
+        return $this->location;
+    }
+
+    public function getLiteral(): ?string
+    {
+        return $this->literal;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'type'     => $this->type,
+            'lexeme'   => $this->lexeme,
+            'literal'  => $this->literal,
+            'location' => $this->location->jsonSerialize()
+        ];
+    }
 }

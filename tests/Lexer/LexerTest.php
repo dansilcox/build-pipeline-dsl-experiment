@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace JoistTest\Lexer;
 
 use Joist\Exception\LexerException;
-use Joist\Lexer\Token;
 use Joist\Lexer\Lexer;
 use PHPUnit\Framework\TestCase;
 
 final class LexerTest extends TestCase
 {
     private string $joistSrcFilePath = __DIR__ . '/sample.joist';
+
+    private string $tokenisedFilePath = __DIR__ . '/tokenised.sample.joist.json';
 
     public function testTokeniseFileNotExist(): void
     {
@@ -31,10 +32,11 @@ final class LexerTest extends TestCase
     {
         $objectUnderTest = new Lexer();
 
-        self::assertFileExists($this->joistSrcFilePath);
         $joistSrc = $this->getSourceFromFile();
+        $expectedTokenised = $this->unserialiseTokenisedFile();
 
         self::assertTrue($objectUnderTest->tokeniseFromString($joistSrc));
+        self::assertSame($expectedTokenised, $objectUnderTest->getTokenisedOutput());
     }
 
     public function testTokenise(): void
@@ -55,7 +57,7 @@ final class LexerTest extends TestCase
         $objectUnderTest = new Lexer();
 
         self::assertFalse($objectUnderTest->tokeniseFromString($joistSrcBad));
-        self::assertSame('Expected ##joist header, none found', $objectUnderTest->getLastError());
+        self::assertSame('Expected ##joist:"<version>" header, none found', $objectUnderTest->getLastError());
 
         $joistSrcGood = $this->getSourceFromFile();
 
@@ -68,8 +70,11 @@ final class LexerTest extends TestCase
         $tempFile = sys_get_temp_dir() . '/temp-joist-file.joist';
         touch($tempFile);
         self::assertFileExists($tempFile);
+
         $objectUnderTest = new Lexer($tempFile);
+        
         unlink($tempFile);
+        self::assertFileDoesNotExist($tempFile);
 
         $this->expectException(LexerException::class);
         $this->expectExceptionMessage('Source file not found: ' . $tempFile);
@@ -108,13 +113,28 @@ stage('bla', (always)) {
   sh('bla')
 }
 EOF,
-              'Expected ##joist header, none found'
+                'Expected ##joist:"<version>" header, none found'
             ]
         ];
     }
 
     private function getSourceFromFile(): string
     {
+        self::assertFileExists($this->joistSrcFilePath);
+
         return file_get_contents($this->joistSrcFilePath) ?: '';
+    }
+
+    /**
+     * @return array TODO: return a specific object rather than just an assoc array
+     */
+    private function unserialiseTokenisedFile(): array
+    {
+        self::assertFileExists($this->tokenisedFilePath);
+
+        $source = file_get_contents($this->tokenisedFilePath) ?: '';
+        self::assertJson($source);
+        
+        return json_decode($source, true, 512, JSON_THROW_ON_ERROR);
     }
 }
