@@ -8,7 +8,10 @@ class Lexeme
 {
     public const FILE_HEADER = '##joist:';
 
-    public const STRING = '"';
+    public const STRING = [
+        '"',
+        "'"
+    ];
 
     public const KEYWORDS = [
         'always',
@@ -19,7 +22,9 @@ class Lexeme
 
     public const BRACKETS = [
         '{',
-        '}'
+        '}',
+        '(',
+        ')'
     ];
 
     public const IDENTIFIER = ':';
@@ -32,7 +37,16 @@ class Lexeme
 
     public const LINE_COMMENT = '//';
 
-    public const ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', '*', '"'];
+    // public const ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', '*', '"'];
 
-    public const ONE_OR_TWO_CHAR_LEX = ['!', '=', '>', '<'];
+    // public const ONE_OR_TWO_CHAR_LEX = ['!', '=', '>', '<'];
+
+    public static $lexemes = [
+        TokenType::FILE_HEADER     => self::FILE_HEADER,
+        TokenType::KEYWORD         => self::KEYWORDS,
+        TokenType::BRACKET         => self::BRACKETS,
+        TokenType::STRING          => self::STRING,
+        TokenType::IDENTIFIER      => self::IDENTIFIER,
+        TokenType::IDENTIFIER_TYPE => self::IDENTIFIER_TYPES,
+    ];
 }
