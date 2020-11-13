@@ -13,6 +13,8 @@ class Lexeme
         "'"
     ];
 
+    public const NUMBER = [Lexeme::class, 'isNumeric'];
+
     public const KEYWORDS = [
         'always',
         'config',
@@ -20,11 +22,14 @@ class Lexeme
         'stage',
     ];
 
-    public const BRACKETS = [
+    public const SYMBOLS = [
         '{',
         '}',
         '(',
-        ')'
+        ')',
+        '[',
+        ']',
+        ','
     ];
 
     public const IDENTIFIER = ':';
@@ -43,10 +48,21 @@ class Lexeme
 
     public static $lexemes = [
         TokenType::FILE_HEADER     => self::FILE_HEADER,
-        TokenType::KEYWORD         => self::KEYWORDS,
-        TokenType::BRACKET         => self::BRACKETS,
+        TokenType::SYMBOL          => self::SYMBOLS,
         TokenType::STRING          => self::STRING,
+        TokenType::NUMBER          => self::NUMBER,
         TokenType::IDENTIFIER      => self::IDENTIFIER,
         TokenType::IDENTIFIER_TYPE => self::IDENTIFIER_TYPES,
+        TokenType::KEYWORD         => self::KEYWORDS,
     ];
+
+    /**
+     * @var mixed $value
+     * 
+     * @return bool
+     */
+    public static function isNumeric($value): bool
+    {
+        return is_numeric($value);
+    }
 }

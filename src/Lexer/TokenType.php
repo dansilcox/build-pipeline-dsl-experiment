@@ -10,9 +10,11 @@ class TokenType
 
     public const STRING = 'STRING';
 
+    public const NUMBER = 'NUMBER';
+
     public const KEYWORD = 'KEYWORD';
 
-    public const BRACKET = 'BRACKET';
+    public const SYMBOL = 'SYMBOL';
 
     public const IDENTIFIER = 'IDENTIFIER';
 
@@ -27,11 +29,12 @@ class TokenType
 
     public static $typesWithLiterals = [
         self::STRING     => self::TYPE_LOOK_AHEAD,
+        self::NUMBER     => self::TYPE_LOOK_AHEAD,
         self::IDENTIFIER => self::TYPE_LOOK_BEHIND
     ];
 
-    public static $requiresRescan = [
-        self::BRACKET,
-        self::STRING
-    ];
+    // public static $requiresRescan = [
+    //     self::BRACKET,
+    //     self::STRING
+    // ];
 }

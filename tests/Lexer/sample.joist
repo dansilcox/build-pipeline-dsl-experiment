@@ -4,6 +4,12 @@
 
 config {
   projectName: string
+  projectId: number
+  buildType: enum[
+    'a'
+    'b'
+    'c'
+  ]
 }
 
 //stage('Stage 1', (always)) {

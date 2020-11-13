@@ -28,6 +28,447 @@ final class LexerTest extends TestCase
         );
     }
 
+    /**
+     * @param string $sourceString
+     * @param array  $expectedTokens
+     * 
+     * @dataProvider specificStringDataProvider
+     */
+    public function testTokeniseSpecificStrings(string $sourceString, array $expectedTokens): void
+    {
+        $objectUnderTest = new Lexer();
+
+        $tokeniseResult = $objectUnderTest->tokeniseFromString($sourceString, false);
+        $lastError = $objectUnderTest->getLastError();
+
+        self::assertTrue($tokeniseResult, $lastError ?? 'Unknown');
+        self::assertNull($lastError);
+        $actualTokens = $objectUnderTest->getTokenisedOutput();
+        self::assertIsArray($actualTokens);
+        self::assertArrayHasKey('tokens', $actualTokens);
+        sort($expectedTokens);
+        sort($actualTokens['tokens']);
+        self::assertSame($expectedTokens, $actualTokens['tokens']);
+    }
+
+    public function specificStringDataProvider(): array
+    {
+        return [
+            'File header' => [
+                '##joist:"1.3.5"',
+                [
+                    [
+                        'type'     => 'FILE_HEADER',
+                        'lexeme'   => '##joist:',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 8,
+                        ]
+                    ],
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '"',
+                        'literal'  => "1.3.5",
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 9,
+                            'length' => 1,
+                        ]
+                    ]
+                ]
+            ],
+            'Config opener' => [
+                'config {',
+                [
+                    [
+                        'type'     => 'KEYWORD',
+                        'lexeme'   => 'config',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 6,
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '{',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 8,
+                            'length' => 1,
+                        ]
+                    ],
+                ]
+            ],
+            'Config closer' => [
+                '}',
+                [
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '}',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ]
+                ]
+            ],
+            'String config param' => [
+                '  projectName: string',
+                [
+                    [
+                        'type'     => 'IDENTIFIER',
+                        'lexeme'   => ':',
+                        'literal'  => 'projectName',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 12,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'IDENTIFIER_TYPE',
+                        'lexeme'   => 'string',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 14,
+                            'length' => 6,
+                        ]
+                    ],
+                ]
+            ],
+            'Number config param' => [
+                '  projectId: number',
+                [
+                    [
+                        'type'     => 'IDENTIFIER',
+                        'lexeme'   => ':',
+                        'literal'  => 'projectId',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 10,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'IDENTIFIER_TYPE',
+                        'lexeme'   => 'number',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 12,
+                            'length' => 6,
+                        ]
+                    ],
+                ]
+            ],
+            'Enum config param opener' => [
+                '  buildType: enum[',
+                [
+                    [
+                        'type'     => 'IDENTIFIER',
+                        'lexeme'   => ':',
+                        'literal'  => 'buildType',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 10,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'IDENTIFIER_TYPE',
+                        'lexeme'   => 'enum',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 12,
+                            'length' => 4,
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '[',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 16,
+                            'length' => 1,
+                        ]
+                    ]
+                ]
+            ],
+            'Enum string option' => [
+                '  \'dev\'',
+                [
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '\'',
+                        'literal'  => 'dev',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ],
+                ]
+            ], 
+            'Enum number (int) option' => [
+                '  135',
+                [
+                    [
+                        'type'     => 'NUMBER',
+                        'lexeme'   => '135',
+                        'literal'  => '135',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 3,
+                        ]
+                    ],
+                ]
+            ], 
+            'Enum number (float) option' => [
+                '  135.531',
+                [
+                    [
+                        'type'     => 'NUMBER',
+                        'lexeme'   => '135.531',
+                        'literal'  => '135.531',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 7,
+                        ]
+                    ],
+                ]
+            ],
+            'Enum closer (square bracket)' => [
+                ']',
+                [
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => ']',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ],
+                ]
+            ],
+            'Complete enum sample' => [
+                <<<EOF
+                
+  buildType: enum[
+    'a'
+    'b'
+    'c'
+  ]
+EOF,
+                [
+                    [
+                        'type'     => 'IDENTIFIER',
+                        'lexeme'   => ':',
+                        'literal'  => 'buildType',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 10,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'IDENTIFIER_TYPE',
+                        'lexeme'   => 'enum',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 12,
+                            'length' => 4,
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '[',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 16,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '\'',
+                        'literal'  => 'a',
+                        'location' => [
+                            'line'   => 2,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '\'',
+                        'literal'  => 'b',
+                        'location' => [
+                            'line'   => 3,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '\'',
+                        'literal'  => 'c',
+                        'location' => [
+                            'line'   => 4,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => ']',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 5,
+                            'col'    => 1,
+                            'length' => 1,
+                        ]
+                    ],
+                ]
+            ],
+            'Stage' => [
+                'stage(\'bla\'',
+                [
+                    [
+                        'type'     => 'KEYWORD',
+                        'lexeme'   => 'stage',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 5
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '(',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 6,
+                            'length' => 1
+                        ]
+                    ],
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '\'',
+                        'literal'  => 'bla',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 7,
+                            'length' => 1
+                        ]
+                    ],
+                ]
+            ],
+            // 'Stage opener' => [
+            //     'stage(\'bla\', (always)) {',
+            //     [
+            //         [
+            //             'type'     => 'KEYWORD',
+            //             'lexeme'   => 'stage',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 1,
+            //                 'length' => 5
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'SYMBOL',
+            //             'lexeme'   => '(',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 6,
+            //                 'length' => 1
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'STRING',
+            //             'lexeme'   => '\'',
+            //             'literal'  => 'bla',
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 7,
+            //                 'length' => 1
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'SYMBOL',
+            //             'lexeme'   => ',',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 12,
+            //                 'length' => 1
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'SYMBOL',
+            //             'lexeme'   => '(',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 14,
+            //                 'length' => 1
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'KEYWORD',
+            //             'lexeme'   => 'always',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 15,
+            //                 'length' => 6
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'SYMBOL',
+            //             'lexeme'   => ')',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 21,
+            //                 'length' => 1
+            //             ]
+            //         ],
+            //         [
+            //             'type'     => 'SYMBOL',
+            //             'lexeme'   => '{',
+            //             'literal'  => null,
+            //             'location' => [
+            //                 'line'   => 1,
+            //                 'col'    => 22,
+            //                 'length' => 1
+            //             ]
+            //         ]
+            //     ]
+            // ]
+        ];
+    }
+
     public function testTokeniseFromString(): void
     {
         $objectUnderTest = new Lexer();
@@ -36,7 +477,14 @@ final class LexerTest extends TestCase
         $expectedTokenised = $this->unserialiseTokenisedFile();
 
         self::assertTrue($objectUnderTest->tokeniseFromString($joistSrc));
-        self::assertSame($expectedTokenised, $objectUnderTest->getTokenisedOutput());
+
+        $actualTokenised = $objectUnderTest->getTokenisedOutput();
+
+        self::assertIsArray($actualTokenised);
+        self::assertArrayHasKey('tokens', $actualTokenised);
+        sort($actualTokenised['tokens']);
+
+        self::assertSame($expectedTokenised, $actualTokenised);
     }
 
     public function testTokenise(): void
@@ -92,7 +540,7 @@ final class LexerTest extends TestCase
     {
         $objectUnderTest = new Lexer();
 
-        self::assertFalse($objectUnderTest->tokeniseFromString($input));
+        self::assertFalse($objectUnderTest->tokeniseFromString($input, true));
         self::assertSame($expectedMessage, $objectUnderTest->getLastError());
     }
 
@@ -106,6 +554,10 @@ final class LexerTest extends TestCase
                 '',
                 'Cannot tokenise empty string'
             ],
+            'Comment only, effectively blank' => [
+                '// Comment only',
+                'No valid lines found',
+            ],
             'Missing ##joist header' => [
               <<<EOF
 // This is valid - but missing the ##joist header
@@ -118,6 +570,11 @@ EOF,
         ];
     }
 
+    /**
+     * Verify the source file exists, then read it into a string
+     * 
+     * @return string
+     */
     private function getSourceFromFile(): string
     {
         self::assertFileExists($this->joistSrcFilePath);
@@ -126,7 +583,9 @@ EOF,
     }
 
     /**
-     * @return array TODO: return a specific object rather than just an assoc array
+     * Check the tokenised file exists, then unserialise it to an associative array and return it
+     * 
+     * @return array
      */
     private function unserialiseTokenisedFile(): array
     {
@@ -135,6 +594,13 @@ EOF,
         $source = file_get_contents($this->tokenisedFilePath) ?: '';
         self::assertJson($source);
 
-        return json_decode($source, true, 512, JSON_THROW_ON_ERROR);
+        $expectedTokenised = json_decode($source, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertIsArray($expectedTokenised);
+        self::assertArrayHasKey('tokens', $expectedTokenised);
+
+        sort($expectedTokenised['tokens']);
+
+        return $expectedTokenised;
     }
 }

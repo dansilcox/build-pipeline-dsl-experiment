@@ -32,7 +32,7 @@ class Lexer
         return $this->tokeniseFromString($string);
     }
 
-    public function tokeniseFromString(string $sourceString): bool
+    public function tokeniseFromString(string $sourceString, bool $forceFileHeader = true): bool
     {
         // Reset 'last error' for a fresh tokenisation run
         $this->lastError = null;
@@ -47,7 +47,15 @@ class Lexer
             explode("\n", $sourceString)
         )));
 
-        if (strpos((string) $lines[0], Lexeme::FILE_HEADER) === false) {
+        if (empty($lines)) {
+            $this->lastError = 'No valid lines found';
+            return false;
+        }
+
+        if (
+            $forceFileHeader 
+            && strpos((string) $lines[0], Lexeme::FILE_HEADER) === false
+        ) {
             $this->lastError = 'Expected ' . Lexeme::FILE_HEADER . '"<version>" header, none found';
             return false;
         }
@@ -86,45 +94,55 @@ class Lexer
      */
     private function getTokensPerLine(string $line, int $lineNumber): array
     {
-        $lexemes = [
-            TokenType::FILE_HEADER   => Lexeme::FILE_HEADER,
-            TokenType::STRING        => Lexeme::STRING,
-            TokenType::KEYWORD       => Lexeme::KEYWORDS,
-            TokenType::BRACKET       => Lexeme::BRACKETS,
-            TokenType::IDENTIFIER    => Lexeme::IDENTIFIER,
-            TokenType::IDENTIFIER_TYPE
-                => Lexeme::IDENTIFIER_TYPES,
-        ];
-        $typesWithLiterals = [
-            TokenType::STRING     => TokenType::TYPE_LOOK_AHEAD,
-            TokenType::IDENTIFIER => TokenType::TYPE_LOOK_BEHIND
-        ];
-
         $tokens = [];
-        $prevEndPosition = 0;
-        foreach ($lexemes as $type => $lexeme) {
-            $lexemes = $lexeme;
+        foreach (Lexeme::$lexemes as $type => $typeLexemes) {
             $chosenLexeme = null;
-            $position = null;
-            if (!is_array($lexeme)) {
-                $lexemes = [$lexeme];
+            $position = 0;
+
+            // Callable only works for whole lines
+            if (
+                is_callable($typeLexemes) 
+                && $typeLexemes(trim($line))
+            ) {
+                $literal = trim($line);
+                $chosenLexeme = $literal;
+                
+                $uniqueId = "$lineNumber.$position.$type";
+                if (isset($this->tokenisedOutput[$uniqueId])) {
+                    // Got this token, onto the next lexeme for this line
+                    continue;
+                }
+
+                $tokens[$uniqueId] = new Token(
+                    $type,
+                    $chosenLexeme,
+                    new Location($lineNumber + 1, $position + 1, strlen($chosenLexeme)),
+                    $literal
+                );
+                break;
             }
+            // Normalise format (some types have 1, some have more than 1 lexeme)
+            if (!is_array($typeLexemes)) {
+                $typeLexemes = [$typeLexemes];
+            }
+
             $literal = null;
-            foreach ($lexemes as $lex) {
+            foreach ($typeLexemes as $lex) {
                 $position = strpos($line, $lex);
                 if ($position !== false) {
+                    // Found a lexeme for this type, no need to check this type any further
                     $chosenLexeme = $lex;
                     break;
                 }
             }
 
-            if ($chosenLexeme === null || $position === null || $position === false) {
-                // Skip lexeme set altogether if still no match
+            if ($chosenLexeme === null) {
+                // Try next type's lexemes
                 continue;
             }
 
-            if (in_array($type, array_keys($typesWithLiterals), true)) {
-                $lookupType = $typesWithLiterals[$type];
+            if (in_array($type, array_keys(TokenType::$typesWithLiterals), true)) {
+                $lookupType = TokenType::$typesWithLiterals[$type];
                 if ($lookupType === TokenType::TYPE_LOOK_AHEAD) {
                     $subLine = substr($line, $position + 1);
                     $endPosition = strpos($subLine, $chosenLexeme);
@@ -136,25 +154,22 @@ class Lexer
                     if (strpos($line, Lexeme::FILE_HEADER) !== false) {
                         continue;
                     }
-                    $startPosition = $prevEndPosition > 0 ? $prevEndPosition + 1 : 0;
-                    $literal = trim(substr($line, $startPosition, $position));
+                    $literal = trim(substr($line, 0, $position));
                 }
             }
-            $location = new Location($lineNumber + 1, $position + 1, strlen($chosenLexeme));
 
             $uniqueId = "$lineNumber.$position.$type";
             if (isset($this->tokenisedOutput[$uniqueId])) {
-                // Got this token, onto the next
+                // Got this token, onto the next lexeme for this line
                 continue;
             }
 
             $tokens[$uniqueId] = new Token(
                 $type,
                 $chosenLexeme,
-                $location,
+                new Location($lineNumber + 1, $position + 1, strlen($chosenLexeme)),
                 $literal
             );
-            $prevEndPosition = $position;
         }
 
         return $tokens;
