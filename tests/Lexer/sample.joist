@@ -3,8 +3,8 @@
 // Sample Joist file to unit test the lexer
 
 config {
-//  projectName: string
-//}
+  projectName: string
+}
 
 //stage('Stage 1', (always)) {
 //  sh('echo "bla"')

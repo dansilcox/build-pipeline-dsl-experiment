@@ -13,12 +13,22 @@ class Lexeme
     public const KEYWORDS = [
         'always',
         'config',
-        'enum',
         'sh',
         'stage',
     ];
 
-    public const BRACKET_OPEN = '{';
+    public const BRACKETS = [
+        '{',
+        '}'
+    ];
+
+    public const IDENTIFIER = ':';
+
+    public const IDENTIFIER_TYPES = [
+        'string',
+        'number',
+        'enum'
+    ];
 
     public const LINE_COMMENT = '//';
 

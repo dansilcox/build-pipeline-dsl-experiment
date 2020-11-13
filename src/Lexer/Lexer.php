@@ -87,16 +87,21 @@ class Lexer
     private function getTokensPerLine(string $line, int $lineNumber): array
     {
         $lexemes = [
-            TokenType::FILE_HEADER  => Lexeme::FILE_HEADER,
-            TokenType::STRING       => Lexeme::STRING,
-            TokenType::KEYWORD      => Lexeme::KEYWORDS,
-            TokenType::BRACKET_OPEN => Lexeme::BRACKET_OPEN,
+            TokenType::FILE_HEADER   => Lexeme::FILE_HEADER,
+            TokenType::STRING        => Lexeme::STRING,
+            TokenType::KEYWORD       => Lexeme::KEYWORDS,
+            TokenType::BRACKET       => Lexeme::BRACKETS,
+            TokenType::IDENTIFIER    => Lexeme::IDENTIFIER,
+            TokenType::IDENTIFIER_TYPE
+                => Lexeme::IDENTIFIER_TYPES,
         ];
         $typesWithLiterals = [
-            TokenType::STRING
+            TokenType::STRING     => TokenType::TYPE_LOOK_AHEAD,
+            TokenType::IDENTIFIER => TokenType::TYPE_LOOK_BEHIND
         ];
 
         $tokens = [];
+        $prevEndPosition = 0;
         foreach ($lexemes as $type => $lexeme) {
             $lexemes = $lexeme;
             $chosenLexeme = null;
@@ -109,21 +114,34 @@ class Lexer
                 $position = strpos($line, $lex);
                 if ($position !== false) {
                     $chosenLexeme = $lex;
+                    break;
                 }
             }
 
-            if ($chosenLexeme === null || $position === null) {
+            if ($chosenLexeme === null || $position === null || $position === false) {
                 // Skip lexeme set altogether if still no match
                 continue;
             }
-            if (in_array($type, $typesWithLiterals, true)) {
-                $subLine = substr($line, $position + 1);
-                $endPosition = strpos($subLine, $chosenLexeme);
-                if ($endPosition !== false) {
-                    $literal = substr($subLine, 0, $endPosition);
+
+            if (in_array($type, array_keys($typesWithLiterals), true)) {
+                $lookupType = $typesWithLiterals[$type];
+                if ($lookupType === TokenType::TYPE_LOOK_AHEAD) {
+                    $subLine = substr($line, $position + 1);
+                    $endPosition = strpos($subLine, $chosenLexeme);
+                    if ($endPosition !== false) {
+                        $literal = substr($subLine, 0, $endPosition);
+                    }
+                } elseif ($lookupType === TokenType::TYPE_LOOK_BEHIND) {
+                    // Hack to avoid file header
+                    if (strpos($line, Lexeme::FILE_HEADER) !== false) {
+                        continue;
+                    }
+                    $startPosition = $prevEndPosition > 0 ? $prevEndPosition + 1 : 0;
+                    $literal = trim(substr($line, $startPosition, $position));
                 }
             }
             $location = new Location($lineNumber + 1, $position + 1, strlen($chosenLexeme));
+
             $uniqueId = "$lineNumber.$position.$type";
             if (isset($this->tokenisedOutput[$uniqueId])) {
                 // Got this token, onto the next
@@ -136,6 +154,7 @@ class Lexer
                 $location,
                 $literal
             );
+            $prevEndPosition = $position;
         }
 
         return $tokens;

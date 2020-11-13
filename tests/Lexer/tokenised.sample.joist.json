@@ -31,12 +31,42 @@
       }
     },
     {
-      "type": "BRACKET_OPEN",
+      "type": "BRACKET",
       "lexeme": "{",
       "literal": null,
       "location": {
         "line": 2,
         "col": 8,
+        "length": 1
+      }
+    },
+    {
+      "type": "IDENTIFIER",
+      "lexeme": ":",
+      "literal": "projectName",
+      "location": {
+        "line": 3,
+        "col": 12,
+        "length": 1
+      }
+    },
+    {
+      "type": "IDENTIFIER_TYPE",
+      "lexeme": "string",
+      "literal": null,
+      "location": {
+        "line": 3,
+        "col": 14,
+        "length": 6
+      }
+    },
+    {
+      "type": "BRACKET",
+      "lexeme": "}",
+      "literal": null,
+      "location": {
+        "line": 4,
+        "col": 1,
         "length": 1
       }
     }
