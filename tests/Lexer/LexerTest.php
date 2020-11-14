@@ -83,6 +83,79 @@ final class LexerTest extends TestCase
     }
 
     /**
+     * @param string $line
+     * @param string $lexeme
+     * @param int    $col
+     * @param string $expectedLiteral
+     * 
+     * @dataProvider stringDetectionProvider
+     */
+    public function testStringDetection(
+        string $line,
+        string $lexeme,
+        int $col,
+        string $expectedLiteral
+    ): void {
+        $objectUnderTest = new Lexer();
+
+        $objectUnderTest->tokeniseFromString($line, false);
+        $actualTokens = $objectUnderTest->getTokenisedOutput();
+        self::assertIsArray($actualTokens);
+        self::assertArrayHasKey('tokens', $actualTokens);
+        self::assertNotEmpty($actualTokens['tokens'], $objectUnderTest->getLastError() ?? 'Unknown error');
+        
+        // Only check string tokens match
+        $stringTokens = array_values(array_filter($actualTokens['tokens'], static function (array $item): bool {
+            return ($item['type'] ?? 'OTHER') === 'STRING';
+        }));
+        
+        $expectedTokens = [
+            [
+                'type'     => 'STRING',
+                'lexeme'   => $lexeme,
+                'literal'  => $expectedLiteral,
+                'location' => [
+                    'line'   => 1,
+                    'col'    => $col,
+                    'length' => 1
+                ]
+            ]
+        ];
+
+        self::assertSame($expectedTokens, $stringTokens);
+    }
+
+    public function stringDetectionProvider(): array
+    {
+        return [
+            'Version number' => [
+                '##joist:"1.3.5"',
+                '"',
+                9,
+                '1.3.5'
+            ],
+            'Stage (purely alpha)' => [
+                'stage(\'bla\')',
+                '\'',
+                7,
+                'bla'
+            ],
+            'Stage with number' => [
+                'stage(\'Stage 1\', always) {',
+                '\'',
+                7,
+                'Stage 1',
+            ],
+            'Shell command' => [
+                '  sh(\'echo "bla"\')',
+                '\'',
+                4,
+                'echo "bla"'
+            ]
+        ];
+    }
+
+    /**
      * @param string $sourceString
      * @param array  $expectedTokens
      *

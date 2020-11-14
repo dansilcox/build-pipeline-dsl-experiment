@@ -12,6 +12,6 @@ config {
   ]
 }
 
-//stage('Stage 1', always) {
-//  sh('echo "bla"')
-//}
+stage('Stage 1', always) {
+  sh('echo "bla 15"')
+}

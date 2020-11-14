@@ -101,6 +101,7 @@ class Lexer
     private function getTokensPerLine(string $line, int $lineNumber): array
     {
         $words = array_map('trim', explode(' ', $line));
+        $inString = false;
         foreach ($words as $word) {
             $alphaNumericWord = preg_replace(self::ALPHA_NUMERIC_REGEX, '', $word);
             $nonAlphaWord = preg_replace(self::NON_ALPHA_REGEX, '', $word);
@@ -134,14 +135,21 @@ class Lexer
                     );
                 }
 
-                if (in_array($char, Lexeme::STRING, true)) {
+                if (!$inString && in_array($char, Lexeme::STRING, true)) {
                     $type = TokenType::STRING;
                     $position = strpos($line, $char) ?: 0;
                     $endPosition = strpos($line, $char, 1);
                     $chosenLexeme = $char;
 
                     $subWord = substr($word, $position + 1);
-                    [$literal, $extra] = explode($char, $subWord);
+                    $literal = strtok(
+                        substr(
+                            $line,
+                            strpos($line, $chosenLexeme) + 1
+                        ),
+                        $chosenLexeme
+                    );
+
                     $this->addLineToken(
                         $type,
                         $lineNumber,
@@ -149,6 +157,8 @@ class Lexer
                         $chosenLexeme,
                         $literal
                     );
+                    // Toggle whether we're inside a string or not
+                    $inString = !$inString;
                 }
             }
 
@@ -222,89 +232,6 @@ class Lexer
                 );
             }
         }
-
-        // foreach (Lexeme::$lexemes as $type => $typeLexemes) {
-        //     $chosenLexeme = null;
-        //     $position = 0;
-
-        //     // Callable only works for whole lines
-        //     if (
-        //         is_callable($typeLexemes)
-        //         && $typeLexemes(trim($line))
-        //     ) {
-        //         $literal = trim($line);
-        //         $chosenLexeme = $literal;
-        //         $this->addLineToken(
-        //             $type,
-        //             $lineNumber,
-        //             $position,
-        //             $chosenLexeme,
-        //             $literal
-        //         );
-        //         break;
-        //     }
-        //     // Normalise format (some types have 1, some have more than 1 lexeme)
-        //     if (!is_array($typeLexemes)) {
-        //         $typeLexemes = [$typeLexemes];
-        //     }
-
-        //     $literal = null;
-        //     foreach ($typeLexemes as $lex) {
-        //         $position = strpos($line, $lex);
-        //         if ($position !== false) {
-        //             // Found a lexeme for this type, no need to check this type any further
-        //             $chosenLexeme = $lex;
-        //             break;
-        //         }
-        //     }
-
-        //     if ($chosenLexeme === null) {
-        //         // Try next type's lexemes
-        //         continue;
-        //     }
-
-        //     if (in_array($type, array_keys(TokenType::$typesWithLiterals), true)) {
-        //         $lookupType = TokenType::$typesWithLiterals[$type];
-        //         if ($lookupType === TokenType::TYPE_LOOK_AHEAD) {
-        //             $subLine = substr($line, $position + 1);
-        //             $endPosition = strpos($subLine, $chosenLexeme);
-        //             if ($endPosition !== false) {
-        //                 $literal = substr($subLine, 0, $endPosition);
-        //                 $this->addLineToken(
-        //                     $type,
-        //                     $lineNumber,
-        //                     $position,
-        //                     $chosenLexeme,
-        //                     $literal
-        //                 );
-        //                 continue;
-        //             }
-        //         }
-
-        //         if ($lookupType === TokenType::TYPE_LOOK_BEHIND) {
-        //             // Hack to avoid file header
-        //             if (strpos($line, Lexeme::FILE_HEADER) !== false) {
-        //                 continue;
-        //             }
-        //             $literal = trim(substr($line, 0, $position));
-        //             $this->addLineToken(
-        //                 $type,
-        //                 $lineNumber,
-        //                 $position,
-        //                 $chosenLexeme,
-        //                 $literal
-        //             );
-        //             continue;
-        //         }
-        //     }
-        //     $this->addLineToken(
-        //         $type,
-        //         $lineNumber,
-        //         $position,
-        //         $chosenLexeme,
-        //         $literal
-        //     );
-        // }
 
         return $this->lineTokens;
     }

@@ -159,6 +159,146 @@
         "col": 1,
         "length": 1
       }
+    },
+    {
+      "type": "KEYWORD",
+      "lexeme": "stage",
+      "literal": null,
+      "location": {
+        "line": 11,
+        "col": 1,
+        "length": 5
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": "(",
+      "literal": null,
+      "location": {
+        "line": 11,
+        "col": 6,
+        "length": 1
+      }
+    },
+    {
+      "type": "STRING",
+      "lexeme": "'",
+      "literal": "Stage 1",
+      "location": {
+        "line": 11,
+        "col": 7,
+        "length": 1
+      }
+    },
+    {
+      "type": "NUMBER",
+      "lexeme": "1",
+      "literal": "1",
+      "location": {
+        "line": 11,
+        "col": 14,
+        "length": 1
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": ",",
+      "literal": null,
+      "location": {
+        "line": 11,
+        "col": 16,
+        "length": 1
+      }
+    },
+    {
+      "type": "KEYWORD",
+      "lexeme": "always",
+      "literal": null,
+      "location": {
+        "line": 11,
+        "col": 18,
+        "length": 6
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": ")",
+      "literal": null,
+      "location": {
+        "line": 11,
+        "col": 24,
+        "length": 1
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": "{",
+      "literal": null,
+      "location": {
+        "line": 11,
+        "col": 26,
+        "length": 1
+      }
+    },
+    {
+      "type": "KEYWORD",
+      "lexeme": "sh",
+      "literal": null,
+      "location": {
+        "line": 12,
+        "col": 1,
+        "length": 2
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": "(",
+      "literal": null,
+      "location": {
+        "line": 12,
+        "col": 3,
+        "length": 1
+      }
+    },
+    {
+      "type": "STRING",
+      "lexeme": "'",
+      "literal": "echo \"bla 15\"",
+      "location": {
+        "line": 12,
+        "col": 4,
+        "length": 1
+      }
+    },
+    {
+      "type": "NUMBER",
+      "lexeme": "15",
+      "literal": "15",
+      "location": {
+        "line": 12,
+        "col": 15,
+        "length": 2
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": ")",
+      "literal": null,
+      "location": {
+        "line": 12,
+        "col": 19,
+        "length": 1
+      }
+    },
+    {
+      "type": "SYMBOL",
+      "lexeme": "}",
+      "literal": null,
+      "location": {
+        "line": 13,
+        "col": 1,
+        "length": 1
+      }
     }
   ]
 }
