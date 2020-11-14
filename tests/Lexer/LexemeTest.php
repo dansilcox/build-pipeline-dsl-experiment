@@ -7,7 +7,7 @@ namespace JoistTest\Lexer;
 use PHPUnit\Framework\TestCase;
 use Joist\Lexer\Lexeme;
 
-class LexemeTest extends TestCase 
+class LexemeTest extends TestCase
 {
     public function testCallableIsNumeric(): void
     {
@@ -17,7 +17,7 @@ class LexemeTest extends TestCase
     /**
      * @var mixed $value
      * @var bool $expectedResult
-     * 
+     *
      * @dataProvider isNumericDataProvider
      */
     public function testIsNumeric($value, bool $expectedResult): void

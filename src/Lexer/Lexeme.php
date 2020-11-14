@@ -58,7 +58,7 @@ class Lexeme
 
     /**
      * @var mixed $value
-     * 
+     *
      * @return bool
      */
     public static function isNumeric($value): bool

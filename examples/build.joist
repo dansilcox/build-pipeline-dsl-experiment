@@ -23,7 +23,7 @@ config {
 // stage(<name>, (<conditions to run>) { 
 // ... steps  
 // })
-stage('Set up environment', (always)) {
+stage('Set up environment', always) {
   targetVersion = '${config.projectName}-${config.version}'
 }
 
@@ -49,6 +49,6 @@ stage('Roll back', (action == 'rollback')) {
   sh('./scripts/rollback.sh ${targetEnvironment}')
 }
 
-stage('Notify', (always)) {
+stage('Notify', always) {
   sh('./scripts/notify-slack.sh ${projectName} ${action} ${targetEnvironment} ${targetVersion})
 }

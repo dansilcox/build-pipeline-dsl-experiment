@@ -14,6 +14,60 @@ final class LexerTest extends TestCase
 
     private string $tokenisedFilePath = __DIR__ . '/tokenised.sample.joist.json';
 
+    /**
+     * Test that the alphanumeric regex does what we think it does...
+     *
+     * @param string $inputWord
+     * @param string $expectedOutput
+     *
+     * @dataProvider alphaRegexWordDataProvider
+     */
+    public function testAlphaRegex(string $inputWord, string $expectedOutput): void
+    {
+        self::assertSame($expectedOutput, preg_replace(Lexer::ALPHA_NUMERIC_REGEX, '', $inputWord));
+    }
+
+    public function alphaRegexWordDataProvider(): array
+    {
+        return [
+            'Contains symbols' => [
+                'ABCDabcd1234.!$:£@~Z><?',
+                'ABCDabcd1234.Z'
+            ],
+            'Identifier' => [
+                'buildType:',
+                'buildType'
+            ]
+        ];
+    }
+
+    /**
+     * Test that the alphanumeric regex does what we think it does...
+     *
+     * @param string $inputWord
+     * @param string $expectedOutput
+     *
+     * @dataProvider nonAlphaRegexWordDataProvider
+     */
+    public function testNonAlphaRegex(string $inputWord, string $expectedOutput): void
+    {
+        self::assertSame($expectedOutput, preg_replace(Lexer::NON_ALPHA_REGEX, '', $inputWord));
+    }
+
+    public function nonAlphaRegexWordDataProvider(): array
+    {
+        return [
+            'Contains symbols' => [
+                'ABCDabcd1234.!$:£@~Z><?',
+                '!$:£@~><?'
+            ],
+            'Identifier' => [
+                'buildType:',
+                ':'
+            ]
+        ];
+    }
+
     public function testTokeniseFileNotExist(): void
     {
         $nonexistentFile = __DIR__ . '/nonexistent.joist';
@@ -31,7 +85,7 @@ final class LexerTest extends TestCase
     /**
      * @param string $sourceString
      * @param array  $expectedTokens
-     * 
+     *
      * @dataProvider specificStringDataProvider
      */
     public function testTokeniseSpecificStrings(string $sourceString, array $expectedTokens): void
@@ -218,7 +272,7 @@ final class LexerTest extends TestCase
                         ]
                     ],
                 ]
-            ], 
+            ],
             'Enum number (int) option' => [
                 '  135',
                 [
@@ -233,7 +287,7 @@ final class LexerTest extends TestCase
                         ]
                     ],
                 ]
-            ], 
+            ],
             'Enum number (float) option' => [
                 '  135.531',
                 [
@@ -347,7 +401,7 @@ EOF,
                 ]
             ],
             'Stage' => [
-                'stage(\'bla\'',
+                'stage(\'bla\')',
                 [
                     [
                         'type'     => 'KEYWORD',
@@ -379,93 +433,93 @@ EOF,
                             'length' => 1
                         ]
                     ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => ')',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 12,
+                            'length' => 1
+                        ]
+                    ]
                 ]
             ],
-            // 'Stage opener' => [
-            //     'stage(\'bla\', (always)) {',
-            //     [
-            //         [
-            //             'type'     => 'KEYWORD',
-            //             'lexeme'   => 'stage',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 1,
-            //                 'length' => 5
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'SYMBOL',
-            //             'lexeme'   => '(',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 6,
-            //                 'length' => 1
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'STRING',
-            //             'lexeme'   => '\'',
-            //             'literal'  => 'bla',
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 7,
-            //                 'length' => 1
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'SYMBOL',
-            //             'lexeme'   => ',',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 12,
-            //                 'length' => 1
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'SYMBOL',
-            //             'lexeme'   => '(',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 14,
-            //                 'length' => 1
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'KEYWORD',
-            //             'lexeme'   => 'always',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 15,
-            //                 'length' => 6
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'SYMBOL',
-            //             'lexeme'   => ')',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 21,
-            //                 'length' => 1
-            //             ]
-            //         ],
-            //         [
-            //             'type'     => 'SYMBOL',
-            //             'lexeme'   => '{',
-            //             'literal'  => null,
-            //             'location' => [
-            //                 'line'   => 1,
-            //                 'col'    => 22,
-            //                 'length' => 1
-            //             ]
-            //         ]
-            //     ]
-            // ]
+            'Stage opener' => [
+                'stage(\'bla\', always) {',
+                [
+                    [
+                        'type'     => 'KEYWORD',
+                        'lexeme'   => 'stage',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 1,
+                            'length' => 5
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '(',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 6,
+                            'length' => 1
+                        ]
+                    ],
+                    [
+                        'type'     => 'STRING',
+                        'lexeme'   => '\'',
+                        'literal'  => 'bla',
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 7,
+                            'length' => 1
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => ',',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 12,
+                            'length' => 1
+                        ]
+                    ],
+                    [
+                        'type'     => 'KEYWORD',
+                        'lexeme'   => 'always',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 14,
+                            'length' => 6
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => ')',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 20,
+                            'length' => 1
+                        ]
+                    ],
+                    [
+                        'type'     => 'SYMBOL',
+                        'lexeme'   => '{',
+                        'literal'  => null,
+                        'location' => [
+                            'line'   => 1,
+                            'col'    => 22,
+                            'length' => 1
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -561,7 +615,7 @@ EOF,
             'Missing ##joist header' => [
               <<<EOF
 // This is valid - but missing the ##joist header
-stage('bla', (always)) {
+stage('bla', always) {
   sh('bla')
 }
 EOF,
@@ -572,7 +626,7 @@ EOF,
 
     /**
      * Verify the source file exists, then read it into a string
-     * 
+     *
      * @return string
      */
     private function getSourceFromFile(): string
@@ -584,7 +638,7 @@ EOF,
 
     /**
      * Check the tokenised file exists, then unserialise it to an associative array and return it
-     * 
+     *
      * @return array
      */
     private function unserialiseTokenisedFile(): array
