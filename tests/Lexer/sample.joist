@@ -1,4 +1,4 @@
-##joist:"0.1.0"
+##joist:"1.3.5"
 
 // Sample Joist file to unit test the lexer
 
@@ -15,3 +15,7 @@ config {
 stage('Stage 1', always) {
   sh('echo "bla 15"')
 }
+
+// stage('Build', (action == 'build')) {
+//  sh('bin/build.sh')
+// }

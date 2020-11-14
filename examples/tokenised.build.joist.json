@@ -1,0 +1,1214 @@
+{
+    "tokens": [
+        {
+            "type": "FILE_HEADER",
+            "lexeme": "##joist:",
+            "literal": null,
+            "location": {
+                "line": 1,
+                "col": 1,
+                "length": 8
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "\"",
+            "literal": "0.1.0",
+            "location": {
+                "line": 1,
+                "col": 9,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "config",
+            "literal": null,
+            "location": {
+                "line": 2,
+                "col": 1,
+                "length": 6
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 2,
+                "col": 8,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER",
+            "lexeme": ":",
+            "literal": "scmUrl",
+            "location": {
+                "line": 3,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER_TYPE",
+            "lexeme": "string",
+            "literal": null,
+            "location": {
+                "line": 3,
+                "col": 9,
+                "length": 6
+            }
+        },
+        {
+            "type": "IDENTIFIER",
+            "lexeme": ":",
+            "literal": "projectName",
+            "location": {
+                "line": 4,
+                "col": 12,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER_TYPE",
+            "lexeme": "string",
+            "literal": null,
+            "location": {
+                "line": 4,
+                "col": 14,
+                "length": 6
+            }
+        },
+        {
+            "type": "IDENTIFIER",
+            "lexeme": ":",
+            "literal": "version",
+            "location": {
+                "line": 5,
+                "col": 8,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER_TYPE",
+            "lexeme": "string",
+            "literal": null,
+            "location": {
+                "line": 5,
+                "col": 10,
+                "length": 6
+            }
+        },
+        {
+            "type": "IDENTIFIER",
+            "lexeme": ":",
+            "literal": "targetEnvironment",
+            "location": {
+                "line": 6,
+                "col": 18,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "[",
+            "literal": null,
+            "location": {
+                "line": 6,
+                "col": 24,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER_TYPE",
+            "lexeme": "enum",
+            "literal": null,
+            "location": {
+                "line": 6,
+                "col": 20,
+                "length": 4
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "dev",
+            "location": {
+                "line": 7,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "test",
+            "location": {
+                "line": 8,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "preprod",
+            "location": {
+                "line": 9,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "prod",
+            "location": {
+                "line": 10,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "]",
+            "literal": null,
+            "location": {
+                "line": 11,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER",
+            "lexeme": ":",
+            "literal": "action",
+            "location": {
+                "line": 12,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "[",
+            "literal": null,
+            "location": {
+                "line": 12,
+                "col": 13,
+                "length": 1
+            }
+        },
+        {
+            "type": "IDENTIFIER_TYPE",
+            "lexeme": "enum",
+            "literal": null,
+            "location": {
+                "line": 12,
+                "col": 9,
+                "length": 4
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "build",
+            "location": {
+                "line": 13,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "deploy",
+            "location": {
+                "line": 14,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "rollback",
+            "location": {
+                "line": 15,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "]",
+            "literal": null,
+            "location": {
+                "line": 16,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 17,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 18,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Set up environment",
+            "location": {
+                "line": 18,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 18,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 18,
+                "col": 27,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 18,
+                "col": 35,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "always",
+            "literal": null,
+            "location": {
+                "line": 18,
+                "col": 29,
+                "length": 6
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 18,
+                "col": 37,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "${config.projectName}-${config.version}",
+            "location": {
+                "line": 19,
+                "col": 17,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 19,
+                "col": 19,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 19,
+                "col": 38,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "config",
+            "literal": null,
+            "location": {
+                "line": 19,
+                "col": 20,
+                "length": 6
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 20,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 21,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Build",
+            "location": {
+                "line": 21,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 21,
+                "col": 14,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 21,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 21,
+                "col": 34,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 21,
+                "col": 37,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 22,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/build.sh ${targetEnvironment} ${targetVersion}",
+            "location": {
+                "line": 22,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 22,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 22,
+                "col": 25,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 22,
+                "col": 43,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 22,
+                "col": 62,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 23,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 24,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Test",
+            "location": {
+                "line": 24,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 24,
+                "col": 13,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 24,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 24,
+                "col": 33,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 24,
+                "col": 36,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 25,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/test.sh",
+            "location": {
+                "line": 25,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 25,
+                "col": 23,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 25,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 26,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 27,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Publish artifact",
+            "location": {
+                "line": 27,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 27,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 27,
+                "col": 25,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 27,
+                "col": 45,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 27,
+                "col": 48,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 28,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/create-artifact.sh ${targetEnvironment} ${targetVersion}",
+            "location": {
+                "line": 28,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 28,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 28,
+                "col": 35,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 28,
+                "col": 53,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 28,
+                "col": 72,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 29,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/push-artifact.sh ${targetEnvironment} ${targetVersion}",
+            "location": {
+                "line": 29,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 29,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 29,
+                "col": 33,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 29,
+                "col": 51,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 29,
+                "col": 70,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 30,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 31,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Deploy",
+            "location": {
+                "line": 31,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 31,
+                "col": 15,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 31,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 31,
+                "col": 36,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 31,
+                "col": 39,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 32,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/deploy.sh ${targetEnvironment} ${targetVersion}",
+            "location": {
+                "line": 32,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 32,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 32,
+                "col": 26,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 32,
+                "col": 44,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 32,
+                "col": 63,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 33,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 34,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Roll back",
+            "location": {
+                "line": 34,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 34,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 34,
+                "col": 18,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 34,
+                "col": 41,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 34,
+                "col": 44,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 35,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/rollback.sh ${targetEnvironment}",
+            "location": {
+                "line": 35,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 35,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 35,
+                "col": 28,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 35,
+                "col": 46,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 35,
+                "col": 48,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 36,
+                "col": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 37,
+                "col": 6,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": "Notify",
+            "location": {
+                "line": 37,
+                "col": 7,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ",",
+            "literal": null,
+            "location": {
+                "line": 37,
+                "col": 15,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "stage",
+            "literal": null,
+            "location": {
+                "line": 37,
+                "col": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 37,
+                "col": 23,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "always",
+            "literal": null,
+            "location": {
+                "line": 37,
+                "col": 17,
+                "length": 6
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 37,
+                "col": 25,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "(",
+            "literal": null,
+            "location": {
+                "line": 38,
+                "col": 3,
+                "length": 1
+            }
+        },
+        {
+            "type": "STRING",
+            "lexeme": "'",
+            "literal": ".\/scripts\/notify-slack.sh ${projectName} ${action} ${targetEnvironment} ${targetVersion})",
+            "location": {
+                "line": 38,
+                "col": 4,
+                "length": 1
+            }
+        },
+        {
+            "type": "KEYWORD",
+            "lexeme": "sh",
+            "literal": null,
+            "location": {
+                "line": 38,
+                "col": 1,
+                "length": 2
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "{",
+            "literal": null,
+            "location": {
+                "line": 38,
+                "col": 32,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 38,
+                "col": 44,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": ")",
+            "literal": null,
+            "location": {
+                "line": 38,
+                "col": 93,
+                "length": 1
+            }
+        },
+        {
+            "type": "SYMBOL",
+            "lexeme": "}",
+            "literal": null,
+            "location": {
+                "line": 39,
+                "col": 1,
+                "length": 1
+            }
+        }
+    ]
+}

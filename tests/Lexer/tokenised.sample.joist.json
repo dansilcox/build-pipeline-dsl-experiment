@@ -13,7 +13,7 @@
     {
       "type": "STRING",
       "lexeme": "\"",
-      "literal": "0.1.0",
+      "literal": "1.3.5",
       "location": {
         "line": 1,
         "col": 9,
