@@ -38,11 +38,19 @@ class ParserTest extends TestCase
         $configBlock->addParameterAst($paramProjectId);
         $configBlock->addParameterAst($paramBuildType);
 
-        $expectedVersion = '1.3.5';
-        $expectedBuild = new Build(new FileHeader($expectedVersion), $configBlock);
+        $expectedStages = [];
 
-        self::assertEquals($expectedBuild, $objectUnderTest->getBuild());
-        self::assertSame($expectedVersion, $objectUnderTest->getBuild()->getVersion());
+        $expectedVersion = '1.3.5';
+        $expectedBuild = new Build(
+            new FileHeader($expectedVersion),
+            $configBlock,
+            $expectedStages
+        );
+
+        $actualBuild = $objectUnderTest->getBuild();
+        self::assertEquals($expectedBuild, $actualBuild);
+        self::assertSame($expectedVersion, $actualBuild->getVersion());
+        self::assertEquals($expectedStages, $actualBuild->getStages());
     }
 
     public function testParserConstructWithNoFileHeaderVersion(): void

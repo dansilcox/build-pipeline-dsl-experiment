@@ -6,6 +6,8 @@ namespace JoistTest\Ast;
 
 use Joist\Ast\Build;
 use Joist\Ast\FileHeader;
+use Joist\Ast\Config\ConfigBlock;
+use Joist\Ast\Stage\Stage;
 use PHPUnit\Framework\TestCase;
 
 class BuildTest extends TestCase
@@ -15,8 +17,18 @@ class BuildTest extends TestCase
         $version = '1.3.5';
 
         $fileHeader = new FileHeader($version);
-        $build = new Build($fileHeader);
+        $configBlock = new ConfigBlock();
+        $stages = [
+            new Stage('Test')
+        ];
+        $build = new Build(
+            $fileHeader,
+            $configBlock,
+            $stages
+        );
 
         self::assertSame($version, $build->getVersion());
+        self::assertSame($configBlock, $build->getConfig());
+        self::assertSame($stages, $build->getStages());
     }
 }

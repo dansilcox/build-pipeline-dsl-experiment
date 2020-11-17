@@ -10,6 +10,7 @@ use Joist\Ast\Config\ConfigBlock as ConfigBlockAst;
 use Joist\Lexer\Token;
 use Joist\Parser\ConfigBlock as ConfigBlockParser;
 use Joist\Parser\FileHeader as FileHeaderParser;
+use Joist\Parser\Stage as StageParser;
 
 class Parser
 {
@@ -25,7 +26,8 @@ class Parser
 
         $this->build = new Build(
             $this->parseFileHeader(),
-            $this->parseConfigBlock()
+            $this->parseConfigBlock(),
+            $this->getStages()
         );
     }
 
@@ -86,5 +88,10 @@ class Parser
     private function parseConfigBlock(): ?ConfigBlockAst
     {
         return (new ConfigBlockParser($this))->parse($this->tokens);
+    }
+
+    private function getStages(): array
+    {
+        return (new StageParser($this))->parse($this->tokens);
     }
 }
