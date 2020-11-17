@@ -9,3 +9,5 @@ config/.env
 # Vendor/packages
 vendor/
 
+# Coverage reports
+html-coverage/

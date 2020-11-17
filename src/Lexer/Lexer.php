@@ -148,7 +148,7 @@ class Lexer
                             strpos($line, $chosenLexeme) + 1
                         ),
                         $chosenLexeme
-                    );
+                    ) ?: null;
 
                     $this->addLineToken(
                         $type,
@@ -158,7 +158,7 @@ class Lexer
                         $literal
                     );
                     // Toggle whether we're inside a string or not
-                    $inString = !$inString;
+                    $inString = true;
                 }
             }
 
@@ -260,6 +260,15 @@ class Lexer
         return $lineParts[0] ?? '';
     }
 
+    /**
+     * Add a unique token based on information from a given line in the input string
+     *
+     * @param string $type
+     * @param int $lineNumber
+     * @param int $position
+     * @param string $chosenLexeme
+     * @param string|null $literal
+     */
     private function addLineToken(
         string $type,
         int $lineNumber,
@@ -268,10 +277,6 @@ class Lexer
         ?string $literal = null
     ): void {
         $uniqueId = "$lineNumber.$position.$type";
-        if (isset($this->lineTokens[$uniqueId])) {
-            // Got this token, onto the next lexeme for this line
-            return;
-        }
 
         $this->lineTokens[$uniqueId] = new Token(
             $type,

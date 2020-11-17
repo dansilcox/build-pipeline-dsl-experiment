@@ -27,6 +27,9 @@ class TokenType
     /** @var string types with literals that need to look behind for the literal */
     public const TYPE_LOOK_BEHIND = 'LOOK_BEHIND';
 
+    /**
+     * @var array<string,string>
+     */
     public static $typesWithLiterals = [
         self::STRING     => self::TYPE_LOOK_AHEAD,
         self::NUMBER     => self::TYPE_LOOK_AHEAD,

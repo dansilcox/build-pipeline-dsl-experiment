@@ -5,52 +5,86 @@ declare(strict_types=1);
 namespace Joist\Parser;
 
 use Joist\Ast\Build;
-use Joist\Lexer\TokenType;
+use Joist\Ast\FileHeader as FileHeaderAst;
+use Joist\Ast\Config\ConfigBlock as ConfigBlockAst;
 use Joist\Lexer\Token;
-use Joist\Exception\ErrorCode;
-use Joist\Exception\Parser\SyntaxException;
+use Joist\Parser\ConfigBlock as ConfigBlockParser;
+use Joist\Parser\FileHeader as FileHeaderParser;
 
 class Parser
 {
-    private const DEFAULT_VERSION = '0.1.0';
+    private array $tokens;
 
     private Build $build;
 
+    private ?int $searchLine = null;
+
     public function __construct(array $tokens)
     {
-        $fileHeaderTokens = array_values(array_filter($tokens, static function (Token $token): bool {
-            return $token->getLocation()->getLine() === 1;
-        }));
-        $version = null;
-        $gotFileHeaderToken = false;
-        $fileHeaderTokenLocation = null;
-        foreach ($fileHeaderTokens as $fileHeaderToken) {
-            if ($fileHeaderToken->getType() === TokenType::FILE_HEADER) {
-                $gotFileHeaderToken = true;
-                $fileHeaderTokenLocation = $fileHeaderToken->getLocation();
-            }
+        $this->tokens = $tokens;
 
-            if ($gotFileHeaderToken && $fileHeaderToken->getType() === TokenType::STRING) {
-                $version = $fileHeaderToken->getLiteral();
-            }
-        }
-
-        if ($version === null) {
-            if ($gotFileHeaderToken) {
-                throw new SyntaxException(
-                    'Invalid file header, missing version identifier',
-                    ErrorCode::SYNTAX_ERROR_FILE_HEADER,
-                    $fileHeaderTokenLocation
-                );
-            }
-            $version = self::DEFAULT_VERSION;
-        }
-
-        $this->build = new Build($version);
+        $this->build = new Build(
+            $this->parseFileHeader(),
+            $this->parseConfigBlock()
+        );
     }
 
     public function getBuild(): Build
     {
         return $this->build;
+    }
+
+    /**
+     * Search line 'find by line' filter
+     *
+     * @param int|null $searchLine
+     * @deprecated use getTokensByLine()
+     */
+    public function setSearchLine(?int $searchLine): void
+    {
+        $this->searchLine = $searchLine;
+    }
+
+    /**
+     * @return int|null
+     *
+     * @internal Mostly just for unit test purposes
+     * @deprecated use getTokensByLine()
+     */
+    public function getSearchLine(): ?int
+    {
+        return $this->searchLine;
+    }
+
+    /**
+     * Filter by line
+     *
+     * @param Token $token
+     *
+     * @return bool
+     * @deprecated use getTokensByLine()
+     */
+    public function filterByLine(Token $token): bool
+    {
+        return $token->getLocation()->getLine() === $this->searchLine;
+    }
+
+    public function getTokensByLine(int $line): array
+    {
+        $this->searchLine = $line;
+        $filtered = array_values(array_filter($this->tokens, [$this, 'filterByLine']));
+        $this->searchLine = null;
+
+        return $filtered;
+    }
+
+    private function parseFileHeader(): FileHeaderAst
+    {
+        return (new FileHeaderParser($this))->parse($this->tokens);
+    }
+
+    private function parseConfigBlock(): ?ConfigBlockAst
+    {
+        return (new ConfigBlockParser($this))->parse($this->tokens);
     }
 }

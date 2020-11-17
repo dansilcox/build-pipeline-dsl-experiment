@@ -6,6 +6,9 @@ namespace JoistTest\Parser;
 
 use PHPUnit\Framework\TestCase;
 use Joist\Ast\Build;
+use Joist\Ast\FileHeader;
+use Joist\Ast\Config\ConfigBlock;
+use Joist\Ast\Config\Parameter;
 use Joist\Lexer\Location;
 use Joist\Lexer\Token;
 use Joist\Lexer\TokenType;
@@ -19,13 +22,27 @@ class ParserTest extends TestCase
     public function testParserConstructWithFileHeaderVersion(): void
     {
         $tokens = $this->getSampleTokensFromFile();
+
         $objectUnderTest = new Parser($tokens);
 
+        $paramProjectId = new Parameter('projectId', 'number');
+        $paramProjectName = new Parameter('projectName', 'string');
+        $paramBuildType = new Parameter('buildType', 'enum', [
+            'a',
+            'b',
+            'c'
+        ]);
+
+        $configBlock = new ConfigBlock();
+        $configBlock->addParameterAst($paramProjectName);
+        $configBlock->addParameterAst($paramProjectId);
+        $configBlock->addParameterAst($paramBuildType);
+
         $expectedVersion = '1.3.5';
-        $expectedBuild = new Build($expectedVersion);
+        $expectedBuild = new Build(new FileHeader($expectedVersion), $configBlock);
 
         self::assertEquals($expectedBuild, $objectUnderTest->getBuild());
-        self::assertSame($expectedVersion, $objectUnderTest->getBuild()->getJoistVersion());
+        self::assertSame($expectedVersion, $objectUnderTest->getBuild()->getVersion());
     }
 
     public function testParserConstructWithNoFileHeaderVersion(): void
@@ -45,33 +62,91 @@ class ParserTest extends TestCase
         $objectUnderTest = new Parser($tokens);
 
         $expectedVersion = '0.1.0';
-        $expectedBuild = new Build($expectedVersion);
+        $expectedBuild = new Build(new FileHeader($expectedVersion));
 
         self::assertEquals($expectedBuild, $objectUnderTest->getBuild());
-        self::assertSame($expectedVersion, $objectUnderTest->getBuild()->getJoistVersion());
+        self::assertSame($expectedVersion, $objectUnderTest->getBuild()->getVersion());
     }
 
-    public function testParserConstructWithInvalidFileHeader(): void
+    public function testFilterTokensByLine(): void
     {
-        $tokens = [
+        $keywordToken = new Token(
+            TokenType::KEYWORD,
+            'config',
+            new Location(
+                3,
+                1,
+                6
+            )
+        );
+
+        $searchTokens = [
             new Token(
-                TokenType::FILE_HEADER,
-                '##joist:',
+                TokenType::STRING,
+                '"',
                 new Location(
                     1,
+                    1,
+                    1
+                ),
+                'kerblow'
+            ),
+            $keywordToken,
+            new Token(
+                TokenType::SYMBOL,
+                '{',
+                new Location(
+                    5,
                     1,
                     1
                 )
             )
         ];
 
-        $this->expectException(SyntaxException::class);
-        $this->expectExceptionMessage(
-            'Syntax error: Invalid file header, missing version identifier - line 1, column 1'
+        $objectUnderTest = new Parser($searchTokens);
+        self::assertNull($objectUnderTest->getSearchLine());
+
+        // If we don't set the search line, it defaults to 0 so should always be empty
+        self::assertSame([], array_filter($searchTokens, [$objectUnderTest, 'filterByLine']));
+
+        $objectUnderTest->setSearchLine(3);
+        self::assertSame(
+            [
+                $keywordToken
+            ],
+            array_values(array_filter($searchTokens, [$objectUnderTest, 'filterByLine']))
         );
-        new Parser($tokens);
     }
 
+    public function testGetTokensForLine(): void
+    {
+        $line = 12;
+        $token1 = new Token(
+            TokenType::IDENTIFIER,
+            ':',
+            new Location($line, 1, 1)
+        );
+        $token2 = new Token(
+            TokenType::KEYWORD,
+            'config',
+            new Location(4, 1, 1)
+        );
+        $tokens = [
+            $token1,
+            $token2
+        ];
+        $expectedTokens = [
+            $token1
+        ];
+        $objectUnderTest = new Parser($tokens);
+        self::assertSame($expectedTokens, $objectUnderTest->getTokensByLine($line));
+    }
+
+    /**
+     * Get sample tokens from a JSON file and perform numerous validations to ensure we have valid tokens
+     *
+     * @return array
+     */
     private function getSampleTokensFromFile(): array
     {
         self::assertFileExists($this->tokenFilePath);
@@ -82,7 +157,7 @@ class ParserTest extends TestCase
         $parsed = json_decode($tokensString, true, 512, JSON_THROW_ON_ERROR);
         self::assertIsArray($parsed);
         self::assertArrayHasKey('tokens', $parsed);
-        
+
         $expectedTokenKeys = [
             'type',
             'lexeme',

@@ -15,12 +15,12 @@ class LexemeTest extends TestCase
     }
 
     /**
-     * @var mixed $value
+     * @var string $value
      * @var bool $expectedResult
      *
      * @dataProvider isNumericDataProvider
      */
-    public function testIsNumeric($value, bool $expectedResult): void
+    public function testIsNumeric(string $value, bool $expectedResult): void
     {
         self::assertSame($expectedResult, Lexeme::isNumeric($value));
     }
@@ -33,18 +33,18 @@ class LexemeTest extends TestCase
         return [
             // True
             'Int' => [
-                123456,
-                true,
-            ],
-            'Float' => [
-                123.456,
-                true,
-            ],
-            'Numeric string' => [
                 '123456',
                 true,
             ],
-            'Numeric string' => [
+            'Float' => [
+                '123.456',
+                true,
+            ],
+            'Numeric integer string' => [
+                '123456',
+                true,
+            ],
+            'Numeric float string' => [
                 '123.456',
                 true,
             ],

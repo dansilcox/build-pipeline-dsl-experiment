@@ -87,7 +87,7 @@ final class LexerTest extends TestCase
      * @param string $lexeme
      * @param int    $col
      * @param string $expectedLiteral
-     * 
+     *
      * @dataProvider stringDetectionProvider
      */
     public function testStringDetection(
@@ -103,12 +103,12 @@ final class LexerTest extends TestCase
         self::assertIsArray($actualTokens);
         self::assertArrayHasKey('tokens', $actualTokens);
         self::assertNotEmpty($actualTokens['tokens'], $objectUnderTest->getLastError() ?? 'Unknown error');
-        
+
         // Only check string tokens match
         $stringTokens = array_values(array_filter($actualTokens['tokens'], static function (array $item): bool {
             return ($item['type'] ?? 'OTHER') === 'STRING';
         }));
-        
+
         $expectedTokens = [
             [
                 'type'     => 'STRING',

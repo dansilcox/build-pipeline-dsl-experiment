@@ -7,13 +7,15 @@ namespace Joist\Exception\Parser;
 use UnexpectedValueException;
 use Joist\Exception\ErrorCode;
 use Joist\Lexer\Location;
+use Throwable;
 
-class SyntaxException extends UnexpectedValueException {
+class SyntaxException extends UnexpectedValueException
+{
     public function __construct(
-        $message,
-        $code = ErrorCode::SYNTAX_ERROR_GENERIC,
+        string $message,
+        int $code = ErrorCode::SYNTAX_ERROR_GENERIC,
         ?Location $location = null,
-        $previous = null
+        Throwable $previous = null
     ) {
         $fullMessage = $message;
         if ($location !== null) {
