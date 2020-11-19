@@ -12,18 +12,27 @@ use Joist\Ast\Config\Parameter;
 use Joist\Lexer\Location;
 use Joist\Lexer\Token;
 use Joist\Lexer\TokenType;
+use Joist\Parser\Mapper;
 use Joist\Parser\Parser;
 use Joist\Exception\Parser\SyntaxException;
 
 class ParserTest extends TestCase
 {
+    /** @var Mapper&MockObject */
+    private $mapperMock;
+
     private string $tokenFilePath = __DIR__ . '/../Lexer/tokenised.sample.joist.json';
+
+    public function setUp(): void
+    {
+        $this->mapperMock = $this->createMock(Mapper::class);
+    }
 
     public function testParserConstructWithFileHeaderVersion(): void
     {
         $tokens = $this->getSampleTokensFromFile();
 
-        $objectUnderTest = new Parser($tokens);
+        $objectUnderTest = new Parser($tokens, $this->mapperMock);
 
         $paramProjectId = new Parameter('projectId', 'number');
         $paramProjectName = new Parameter('projectName', 'string');
@@ -67,63 +76,13 @@ class ParserTest extends TestCase
                 '1.3.5'
             )
         ];
-        $objectUnderTest = new Parser($tokens);
+        $objectUnderTest = new Parser($tokens, $this->mapperMock);
 
         $expectedVersion = '0.1.0';
         $expectedBuild = new Build(new FileHeader($expectedVersion));
 
         self::assertEquals($expectedBuild, $objectUnderTest->getBuild());
         self::assertSame($expectedVersion, $objectUnderTest->getBuild()->getVersion());
-    }
-
-    public function testFilterTokensByLine(): void
-    {
-        $keywordToken = new Token(
-            TokenType::KEYWORD,
-            'config',
-            new Location(
-                3,
-                1,
-                6
-            )
-        );
-
-        $searchTokens = [
-            new Token(
-                TokenType::STRING,
-                '"',
-                new Location(
-                    1,
-                    1,
-                    1
-                ),
-                'kerblow'
-            ),
-            $keywordToken,
-            new Token(
-                TokenType::SYMBOL,
-                '{',
-                new Location(
-                    5,
-                    1,
-                    1
-                )
-            )
-        ];
-
-        $objectUnderTest = new Parser($searchTokens);
-        self::assertNull($objectUnderTest->getSearchLine());
-
-        // If we don't set the search line, it defaults to 0 so should always be empty
-        self::assertSame([], array_filter($searchTokens, [$objectUnderTest, 'filterByLine']));
-
-        $objectUnderTest->setSearchLine(3);
-        self::assertSame(
-            [
-                $keywordToken
-            ],
-            array_values(array_filter($searchTokens, [$objectUnderTest, 'filterByLine']))
-        );
     }
 
     public function testGetTokensForLine(): void
@@ -146,7 +105,7 @@ class ParserTest extends TestCase
         $expectedTokens = [
             $token1
         ];
-        $objectUnderTest = new Parser($tokens);
+        $objectUnderTest = new Parser($tokens, $this->mapperMock);
         self::assertSame($expectedTokens, $objectUnderTest->getTokensByLine($line));
     }
 

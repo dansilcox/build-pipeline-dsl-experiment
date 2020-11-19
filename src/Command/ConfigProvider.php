@@ -14,7 +14,8 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            new Hello()
+            new Hello(),
+            new ExecFile(),
         ];
     }
 }

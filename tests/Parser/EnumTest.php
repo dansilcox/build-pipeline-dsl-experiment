@@ -14,6 +14,7 @@ use Joist\Lexer\Location;
 use Joist\Lexer\Token;
 use Joist\Lexer\TokenType;
 use Joist\Parser\Enum as EnumParser;
+use Joist\Parser\Mapper;
 use Joist\Parser\Parser;
 use Joist\Exception\Parser\SyntaxException;
 
@@ -46,8 +47,6 @@ class EnumTest extends TestCase
 
     public function testParse(): void
     {
-        $this->parserMock = $this->configureParserMock();
-
         $identifier = 'buildType';
         $identiferType = 'enum';
         $allowedValues = [
@@ -102,6 +101,7 @@ class EnumTest extends TestCase
                 'not-in-enum'
             ),
         ];
+        $this->parserMock = $this->configureParserMock($tokens);
         $metadata = [];
 
         $expected = new ParameterAst($identifier, $identiferType, $allowedValues);
@@ -113,8 +113,6 @@ class EnumTest extends TestCase
 
     public function testParseNoIdentifier(): void
     {
-        $this->parserMock = $this->configureParserMock();
-
         $identiferType = 'enum';
         $allowedValues = [
             'a',
@@ -162,6 +160,7 @@ class EnumTest extends TestCase
                 'not-in-enum'
             ),
         ];
+        $this->parserMock = $this->configureParserMock($tokens);
         $metadata = [];
 
         $objectUnderTest = new EnumParser($this->parserMock);
@@ -169,18 +168,9 @@ class EnumTest extends TestCase
         self::assertNull($objectUnderTest->parse($tokens, $metadata));
     }
 
-    private function configureParserMock(): Parser
+    private function configureParserMock(array $tokens): Parser
     {
-        $mock = $this->createMock(Parser::class);
-        $mock
-            ->expects(self::atLeastOnce())
-            ->method('setSearchLine')
-            ->with(self::logicalOr(self::isType('int'), self::isNull()));
-        $mock
-            ->expects(self::atLeastOnce())
-            ->method('filterByLine')
-            ->with(self::isInstanceOf(Token::class))
-            ->willReturn(true);
-        return $mock;
+        $mapper = $this->createMock(Mapper::class);
+        return new Parser($tokens, $mapper);
     }
 }

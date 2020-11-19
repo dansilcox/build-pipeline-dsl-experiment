@@ -15,8 +15,8 @@ class ConfigBlock implements ParserComponent
 {
     private Parser $parser;
 
-    private int $startLine = 0;
-    private int $endLine = 0;
+    private ?int $startLine = null;
+    private ?int $endLine = null;
 
     private ?ConfigBlockAst $astConfigBlock;
 
@@ -33,20 +33,20 @@ class ConfigBlock implements ParserComponent
 
         $this->setStartEndLines($tokens);
 
-        if ($this->startLine === 0 && $this->startLine === $this->endLine) {
+        if ($this->startLine === null || $this->endLine === null) {
             return null;
         }
 
         $this->astConfigBlock = new ConfigBlockAst();
 
         // Loop through the relevant lines and find tokens relevant to a config block
-        $currentLine = $this->startLine;
-        while ($currentLine < $this->endLine) {
+        $currentLine = $this->startLine - 1;
+        while ($currentLine <= $this->endLine) {
             $currentLine++;
-
-            $this->parser->setSearchLine($currentLine);
-            $tokensForLine = array_values(array_filter($tokens, [$this->parser, 'filterByLine']));
-            $this->parser->setSearchLine(null);
+            $tokensForLine = $this->parser->getTokensByLine($currentLine);
+            if (empty($tokensForLine)) {
+                continue;
+            }
 
             $identifierName = null;
             $identifierType = null;
@@ -62,7 +62,7 @@ class ConfigBlock implements ParserComponent
                         // Reset name/type/values
                         $identifierName = null;
                         $identifierType = null;
-                        break;
+                        continue;
                     }
                 }
 
@@ -103,6 +103,9 @@ class ConfigBlock implements ParserComponent
                 && $token->getLexeme() === 'config'
             ) {
                 $this->startLine = $token->getLocation()->getLine();
+                if ($this->endLine !== null) {
+                    break;
+                }
             }
 
             if (
@@ -110,6 +113,9 @@ class ConfigBlock implements ParserComponent
                 && $token->getLexeme() === '}'
             ) {
                 $this->endLine = $token->getLocation()->getLine();
+                if ($this->startLine !== null) {
+                    break;
+                }
             }
         }
     }

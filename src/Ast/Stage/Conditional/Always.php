@@ -8,4 +8,8 @@ use Joist\Ast\AstComponent;
 
 class Always implements AstComponent, AstStageConditional
 {
+    public function __toString(): string
+    {
+        return 'always';
+    }
 }

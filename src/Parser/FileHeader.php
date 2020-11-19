@@ -26,9 +26,7 @@ class FileHeader implements ParserComponent
             return null;
         }
 
-        $this->parser->setSearchLine(1);
-        $filteredTokens = array_values(array_filter($tokens, [$this->parser, 'filterByLine']));
-        $this->parser->setSearchLine(null);
+        $filteredTokens = $this->parser->getTokensByLine(1);
 
         return new FileHeaderAst($this->getVersionFromTokens($filteredTokens));
     }

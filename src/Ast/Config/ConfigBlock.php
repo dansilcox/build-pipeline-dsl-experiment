@@ -27,6 +27,7 @@ class ConfigBlock implements AstComponent
     ): void {
         $identifier = $parameterAst->getName();
         $identifierType = $parameterAst->getType();
+
         $this->params["$identifier:$identifierType"] = $parameterAst;
     }
 

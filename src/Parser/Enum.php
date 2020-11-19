@@ -41,9 +41,7 @@ class Enum implements ParserComponent
         $currentLine = $this->startLine;
         while ($currentLine < $this->endLine) {
             $currentLine++;
-            $this->parser->setSearchLine($currentLine);
-            $tokensForLine = array_values(array_filter($tokens, [$this->parser, 'filterByLine']));
-            $this->parser->setSearchLine(null);
+            $tokensForLine = $this->parser->getTokensByLine($currentLine);
 
             foreach ($tokensForLine as $token) {
                 if ($token->getType() === TokenType::IDENTIFIER) {

@@ -33,4 +33,21 @@ class Parameter implements AstComponent
     {
         return $this->allowedValues;
     }
+
+    public function __toString(): string
+    {
+        $string = "$this->identifierName: $this->identifierType";
+        if ($this->identifierType === 'enum') {
+            $start = "  '";
+            $end = "'";
+            $string .= '[' 
+                . PHP_EOL
+                . $start
+                . implode($end . PHP_EOL . $start, $this->allowedValues) 
+                . $end 
+                . PHP_EOL 
+                . ']';
+        }
+        return $string;
+    }
 }

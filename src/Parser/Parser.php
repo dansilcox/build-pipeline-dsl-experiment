@@ -10,7 +10,9 @@ use Joist\Ast\Config\ConfigBlock as ConfigBlockAst;
 use Joist\Lexer\Token;
 use Joist\Parser\ConfigBlock as ConfigBlockParser;
 use Joist\Parser\FileHeader as FileHeaderParser;
+use Joist\Parser\Mapper as TokenMapper;
 use Joist\Parser\Stage as StageParser;
+use Joist\Exception\Parser\SyntaxException;
 
 class Parser
 {
@@ -20,8 +22,23 @@ class Parser
 
     private ?int $searchLine = null;
 
-    public function __construct(array $tokens)
+    /**
+     * @param array<Token> $tokens
+     */
+    public function __construct(array $tokens, TokenMapper $mapper)
     {
+        if (isset($tokens['tokens'])) {
+            $tokens = $tokens['tokens'];
+        }
+
+        if (empty($tokens) || !isset($tokens[0])) {
+            throw new SyntaxException('Cannot parse an empty array');
+        }
+        
+        if (!($tokens[0] instanceof Token)) {
+            $tokens = $mapper->fromArray($tokens);
+        }
+        
         $this->tokens = $tokens;
 
         $this->build = new Build(
@@ -31,6 +48,9 @@ class Parser
         );
     }
 
+    /** 
+     * @return Build
+     */
     public function getBuild(): Build
     {
         return $this->build;
@@ -66,11 +86,16 @@ class Parser
      * @return bool
      * @deprecated use getTokensByLine()
      */
-    public function filterByLine(Token $token): bool
+    private function filterByLine(Token $token): bool
     {
         return $token->getLocation()->getLine() === $this->searchLine;
     }
 
+    /**
+     * @param int $line
+     * 
+     * @return array
+     */
     public function getTokensByLine(int $line): array
     {
         $this->searchLine = $line;
@@ -80,16 +105,25 @@ class Parser
         return $filtered;
     }
 
+    /**
+     * @return FileHeaderAst
+     */
     private function parseFileHeader(): FileHeaderAst
     {
         return (new FileHeaderParser($this))->parse($this->tokens);
     }
 
+    /**
+     * @return ConfigBlockAst|null
+     */
     private function parseConfigBlock(): ?ConfigBlockAst
     {
         return (new ConfigBlockParser($this))->parse($this->tokens);
     }
 
+    /**
+     * @return array<StageAst>
+     */
     private function getStages(): array
     {
         return (new StageParser($this))->parse($this->tokens);
