@@ -6,6 +6,7 @@ namespace JoistTest\Command;
 
 use Joist\Command\ConfigProvider;
 use Joist\Command\Hello;
+use Joist\Command\ExecFile;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
@@ -15,7 +16,8 @@ final class ConfigProviderTest extends TestCase
         $objectUnderTest = new ConfigProvider();
 
         $expectedCommands = [
-            new Hello()
+            new Hello(),
+            new ExecFile(),
         ];
         $actualCommands = $objectUnderTest();
 

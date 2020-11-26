@@ -35,8 +35,7 @@ class FileHeaderTest extends TestCase
 
     public function testFileHeaderParserWithNoTokens(): void
     {
-        $this->parserMock->expects(self::never())->method('setSearchLine');
-        $this->parserMock->expects(self::never())->method('filterByLine');
+        $this->parserMock->expects(self::never())->method('getTokensByLine');
 
         self::assertNull($this->objectUnderTest->parse([]));
     }
@@ -63,17 +62,35 @@ class FileHeaderTest extends TestCase
             ),
         ];
 
+        $tokensLine1 = [
+            new Token(
+                TokenType::FILE_HEADER,
+                '##joist:',
+                new Location(1, 1, 8)
+            ),
+            new Token(
+                TokenType::STRING,
+                '"',
+                new Location(1, 9, 1),
+                '1.3.5'
+            ),
+        ];
+
+        $tokensLine3 = [
+            new Token(
+                TokenType::STRING,
+                '"',
+                new Location(3, 1, 1),
+                '2.4.6'
+            ),
+        ];
+
         $this
             ->parserMock
             ->expects(self::atLeastOnce())
-            ->method('setSearchLine')
-            ->with(self::logicalOr(1, null));
-        $this
-            ->parserMock
-            ->expects(self::atLeastOnce())
-            ->method('filterByLine')
-            ->with(self::isInstanceOf(Token::class))
-            ->willReturn(true);
+            ->method('getTokensByLine')
+            ->with(self::isType('int'))
+            ->willReturnOnConsecutiveCalls($tokensLine1, $tokensLine3);
 
         $expected = new FileHeaderAst('1.3.5');
         self::assertEquals($expected, $this->objectUnderTest->parse($tokens));
@@ -96,14 +113,9 @@ class FileHeaderTest extends TestCase
         $this
             ->parserMock
             ->expects(self::atLeastOnce())
-            ->method('setSearchLine')
-            ->with(self::logicalOr(1, null));
-        $this
-            ->parserMock
-            ->expects(self::atLeastOnce())
-            ->method('filterByLine')
-            ->with(self::isInstanceOf(Token::class))
-            ->willReturn(true);
+            ->method('getTokensByLine')
+            ->with(self::isType('int'))
+            ->willReturn($tokens);
 
         $this->expectException(SyntaxException::class);
         $this->expectExceptionMessage(

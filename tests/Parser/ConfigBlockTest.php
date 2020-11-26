@@ -100,7 +100,7 @@ class ConfigBlockTest extends TestCase
         $expected->addParameter('awesomeness', 'number');
         $expected->addParameter('having_fun_yet', 'enum', ['yes', 'no', 'ish']);
 
-        $parserMock = $this->configureParserMock();
+        $parserMock = $this->configureParserMock($tokens);
 
         $objectUnderTest = new ConfigBlockParser($parserMock);
         $actual = $objectUnderTest->parse($tokens);
@@ -115,18 +115,14 @@ class ConfigBlockTest extends TestCase
         self::assertNull($objectUnderTest->parse([]));
     }
 
-    private function configureParserMock(): Parser
+    private function configureParserMock(array $tokens): Parser
     {
         $mock = $this->createMock(Parser::class);
         $mock
             ->expects(self::atLeastOnce())
-            ->method('setSearchLine')
-            ->with(self::logicalOr(self::isType('int'), self::isNull()));
-        $mock
-            ->expects(self::atLeastOnce())
-            ->method('filterByLine')
-            ->with(self::isInstanceOf(Token::class))
-            ->willReturn(true);
+            ->method('getTokensByLine')
+            ->with(self::isType('int'))
+            ->willReturn($tokens);
         return $mock;
     }
 }

@@ -40,9 +40,8 @@ class Enum implements ParserComponent
         // Loop through the relevant lines and find tokens relevant to a config block
         $currentLine = $this->startLine;
         while ($currentLine < $this->endLine) {
-            $currentLine++;
             $tokensForLine = $this->parser->getTokensByLine($currentLine);
-
+            $currentLine++;
             foreach ($tokensForLine as $token) {
                 if ($token->getType() === TokenType::IDENTIFIER) {
                     $identifier = $token->getLiteral();

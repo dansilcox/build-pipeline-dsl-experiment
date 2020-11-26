@@ -11,6 +11,8 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Joist\Lexer\Lexer;
+use Joist\Parser\Parser;
 
 class ExecFileTest extends TestCase
 {
@@ -45,9 +47,9 @@ class ExecFileTest extends TestCase
             ->willReturn($this->fileName);
 
         $outputMock
-            ->expects(self::once())
+            ->expects(self::atLeastOnce())
             ->method('writeLn')
-            ->with('Parsing ' . $this->fileName);
+            ->with(self::isType('string'));
 
         self::assertSame(0, $this->objectUnderTest->run($inputMock, $outputMock));
     }

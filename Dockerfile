@@ -6,9 +6,6 @@ VOLUME [ "/app" ]
 
 COPY ./config/git-auth-config.json /root/.composer/auth.json
 
-COPY ./bin/joist /usr/local/bin/joist
-RUN chmod +x /usr/local/bin/joist
-
 COPY ./scripts /usr/local/bin
 RUN chmod +x /usr/local/bin/*.sh
 
@@ -18,4 +15,4 @@ WORKDIR /app
 
 EXPOSE 80
 
-ENTRYPOINT /bin/bash
+ENTRYPOINT ["tail", "-f", "/dev/null"]
