@@ -11,27 +11,26 @@ use Joist\Ast\Stage\Conditional\AstStageConditional;
 
 class Stage implements AstComponent
 {
-    private string $name;
+    private StageHeader $stageHeader;
 
     /** @var array<StepAst> */
     private array $steps = [];
 
     private AstStageConditional $conditional;
 
-    public function __construct(string $name, ?AstStageConditional $conditional = null)
+    public function __construct(StageHeader $stageHeader)
     {
-        $this->name = $name;
-        $this->conditional = $conditional ?? new AlwaysAst();
+        $this->stageHeader = $stageHeader;
     }
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->stageHeader->getName();
     }
 
     public function getConditional(): AstStageConditional
     {
-        return $this->conditional;
+        return $this->stageHeader->getConditional();
     }
 
     public function addStepAst(StepAst $step): void

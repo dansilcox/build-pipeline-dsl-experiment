@@ -8,8 +8,23 @@ use Joist\Ast\AstComponent;
 
 class Always implements AstComponent, AstStageConditional
 {
+    private bool $isDefault;
+
+    public function __construct(bool $isDefault = false)
+    {
+        $this->isDefault = $isDefault;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->isDefault;
+    }
+
     public function __toString(): string
     {
-        return 'always';
+        return sprintf(
+            'always%s',
+            $this->isDefault ? '(default)' : ''
+        );
     }
 }

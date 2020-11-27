@@ -8,6 +8,7 @@ use Joist\Ast\Build;
 use Joist\Ast\FileHeader as FileHeaderAst;
 use Joist\Ast\Config\ConfigBlock as ConfigBlockAst;
 use Joist\Lexer\Token;
+use Joist\Lexer\TokenType;
 use Joist\Parser\ConfigBlock as ConfigBlockParser;
 use Joist\Parser\FileHeader as FileHeaderParser;
 use Joist\Parser\Mapper as TokenMapper;
@@ -126,6 +127,39 @@ class Parser
      */
     private function getStages(): array
     {
-        return (new StageParser($this))->parse($this->tokens);
+        $insideStageBlock = false;
+        $tokenBlock = [];
+        $stages = [];
+        
+        foreach ($this->tokens as $token) {
+            $stageParser = new StageParser($this);
+            if (
+                $token->getType() === TokenType::KEYWORD
+                && $token->getLexeme() === 'stage'
+            ) {
+                $insideStageBlock = true;
+                $tokenBlock = [];
+            }
+
+            if ($insideStageBlock) {
+                $tokenBlock[] = $token;
+            }
+
+            if (
+                $token->getType() === TokenType::SYMBOL
+                && $token->getLexeme() === '}'
+                && $insideStageBlock
+            ) {
+                $insideStageBlock = false;
+                if (!empty($tokenBlock)) {
+                    $stage = $stageParser->parse($tokenBlock);
+                    if ($stage !== null) {
+                        $stages[$stage->getName()] = $stage;
+                    }
+                }
+            }
+        }
+
+        return $stages;
     }
 }

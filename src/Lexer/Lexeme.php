@@ -17,6 +17,7 @@ class Lexeme
 
     public const KEYWORDS = [
         'always',
+        'action',
         'config',
         'sh',
         'stage',
