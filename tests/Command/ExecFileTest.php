@@ -19,6 +19,12 @@ class ExecFileTest extends TestCase
     /** @var string */
     private $fileName = __DIR__ . '/test.joist';
 
+    /** @var Lexer&MockObject */
+    private $lexerMock;
+
+    /** @var Parser&MockObject */
+    private $parserMock;
+
     /** @var ExecFile */
     private $objectUnderTest;
 

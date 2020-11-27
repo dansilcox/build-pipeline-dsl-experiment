@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace JoistTest\Parser;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Joist\Ast\Build;
 use Joist\Ast\FileHeader;
 use Joist\Ast\Config\ConfigBlock;
 use Joist\Ast\Config\Parameter;
+use Joist\Ast\Stage\Stage as StageAst;
+use Joist\Ast\Stage\StageHeader as StageHeaderAst;
+use Joist\Ast\Stage\Conditional\Always as AlwaysConditionalAst;
 use Joist\Lexer\Location;
 use Joist\Lexer\Token;
 use Joist\Lexer\TokenType;
@@ -47,7 +51,9 @@ class ParserTest extends TestCase
         $configBlock->addParameterAst($paramProjectId);
         $configBlock->addParameterAst($paramBuildType);
 
-        $expectedStages = [];
+        $expectedStages = [
+            'Stage 1' => new StageAst(new StageHeaderAst('Stage 1', new AlwaysConditionalAst()))
+        ];
 
         $expectedVersion = '1.3.5';
         $expectedBuild = new Build(

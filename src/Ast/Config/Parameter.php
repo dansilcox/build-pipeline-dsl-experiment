@@ -40,12 +40,12 @@ class Parameter implements AstComponent
         if ($this->identifierType === 'enum') {
             $start = "  '";
             $end = "'";
-            $string .= '[' 
+            $string .= '['
                 . PHP_EOL
                 . $start
-                . implode($end . PHP_EOL . $start, $this->allowedValues) 
-                . $end 
-                . PHP_EOL 
+                . implode($end . PHP_EOL . $start, $this->allowedValues)
+                . $end
+                . PHP_EOL
                 . ']';
         }
         return $string;

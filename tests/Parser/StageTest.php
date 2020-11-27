@@ -21,7 +21,7 @@ class StageTest extends TestCase
     public function testParseNoTokens(): void
     {
         $objectUnderTest = new StageParser($this->createMock(Parser::class));
-        self::assertSame([], $objectUnderTest->parse([]));
+        self::assertSame(null, $objectUnderTest->parse([]));
     }
 
     public function testParseNoValidLinesToParse(): void
@@ -37,6 +37,6 @@ class StageTest extends TestCase
             new Location(0, 1, 1)
         );
         $objectUnderTest = new StageParser($this->createMock(Parser::class));
-        self::assertSame([], $objectUnderTest->parse([$tokenStart, $tokenEnd]));
+        self::assertSame(null, $objectUnderTest->parse([$tokenStart, $tokenEnd]));
     }
 }

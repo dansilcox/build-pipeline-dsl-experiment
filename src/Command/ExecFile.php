@@ -36,12 +36,15 @@ class ExecFile extends SymfonyCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * 
+     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filename = $input->getArgument(self::ARGUMENT_FILE_NAME);
+        $filename = $input->getArgument(self::ARGUMENT_FILE_NAME) ?? '';
+        if (is_array($filename)) {
+            $filename = implode('', $filename);
+        }
 
         $output->writeLn('Parsing ' . $filename);
 
@@ -62,12 +65,12 @@ class ExecFile extends SymfonyCommand
         $build = $parser->getBuild();
 
         $output->writeLn('Version: ' . $build->getVersion());
-        
+
         $configBlock = $build->getConfig();
         if ($configBlock !== null) {
             $output->writeLn('Config: ');
             $output->writeLn('---');
-            
+
             $parameters = $configBlock->getParameters();
             if (empty($parameters)) {
                 $output->writeLn('No parameters found');

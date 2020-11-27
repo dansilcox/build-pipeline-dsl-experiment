@@ -55,7 +55,7 @@ class Stage
 
             $currentLine++;
         }
-        
+
         if ($stageHeader === null) {
             return null;
         }
@@ -98,10 +98,10 @@ class Stage
 
     /**
      * @param array $lineTokens
-     * 
+     *
      * @return StageHeaderAst|null
      */
-    private function parseStageHeader(array $lineTokens): ?StageHeaderAst 
+    private function parseStageHeader(array $lineTokens): ?StageHeaderAst
     {
         $name = null;
         $conditional = null;
@@ -118,7 +118,7 @@ class Stage
                 && $token->getLexeme() === 'always'
             ) {
                 $conditional = new AlwaysAst();
-            
+
                 continue;
             }
         }

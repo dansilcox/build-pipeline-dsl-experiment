@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace Joist\Parser;
 
-use Joist\Exception\Lexer\SyntaxException;
+use Joist\Exception\Parser\SyntaxException;
 use Joist\Lexer\Token;
 use Joist\Lexer\Location;
 
-class Mapper {
+class Mapper
+{
     /**
      * Convert a key-value array to an array of tokens
-     * 
-     * @param array $tokens
-     * 
-     * @param array<Token>
+     *
+     * @param array<Token>|array<string,array<Token>> $tokens
+     *
+     * @return array
      */
     public function fromArray(array $tokens): array
     {
         if (isset($tokens['tokens'])) {
+            /** @var array<Token> $tokens */
             $tokens = $tokens['tokens'];
         }
 
@@ -40,9 +42,9 @@ class Mapper {
 
     /**
      * Hydrate a token from a key/value array
-     * 
+     *
      * @param array $tokenArray
-     * 
+     *
      * @return Token
      */
     private function hydrateToken(array $tokenArray): Token
@@ -77,10 +79,10 @@ class Mapper {
 
     /**
      * Recursively validate that an array has the right keys and that values are the expected types
-     * 
+     *
      * @param array $expectedKeys
      * @param array $tokenArray
-     * 
+     *
      * @return bool valid or not
      */
     private function validateArrayKeys(array $expectedKeys, array $tokenArray): bool

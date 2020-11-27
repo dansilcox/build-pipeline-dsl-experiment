@@ -12,9 +12,6 @@ class StageHeader implements AstComponent
 {
     private string $name;
 
-    /** @var array<StepAst> */
-    private array $steps = [];
-
     private AstStageConditional $conditional;
 
     public function __construct(string $name, ?AstStageConditional $conditional = null)

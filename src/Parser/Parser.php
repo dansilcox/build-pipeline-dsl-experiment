@@ -7,6 +7,7 @@ namespace Joist\Parser;
 use Joist\Ast\Build;
 use Joist\Ast\FileHeader as FileHeaderAst;
 use Joist\Ast\Config\ConfigBlock as ConfigBlockAst;
+use Joist\Ast\Stage\Stage as StageAst;
 use Joist\Lexer\Token;
 use Joist\Lexer\TokenType;
 use Joist\Parser\ConfigBlock as ConfigBlockParser;
@@ -24,22 +25,24 @@ class Parser
     private ?int $searchLine = null;
 
     /**
-     * @param array<Token> $tokens
+     * @param array<Token>|array<string,array<Token>> $tokens
+     * @param TokenMapper $mapper
      */
     public function __construct(array $tokens, TokenMapper $mapper)
     {
         if (isset($tokens['tokens'])) {
+            /** @var array<Token> $tokens */
             $tokens = $tokens['tokens'];
         }
 
         if (empty($tokens) || !isset($tokens[0])) {
             throw new SyntaxException('Cannot parse an empty array');
         }
-        
+
         if (!($tokens[0] instanceof Token)) {
             $tokens = $mapper->fromArray($tokens);
         }
-        
+
         $this->tokens = $tokens;
 
         $this->build = new Build(
@@ -49,7 +52,7 @@ class Parser
         );
     }
 
-    /** 
+    /**
      * @return Build
      */
     public function getBuild(): Build
@@ -94,7 +97,7 @@ class Parser
 
     /**
      * @param int $line
-     * 
+     *
      * @return array
      */
     public function getTokensByLine(int $line): array
@@ -123,14 +126,14 @@ class Parser
     }
 
     /**
-     * @return array<StageAst>
+     * @return array<string,StageAst>
      */
     private function getStages(): array
     {
         $insideStageBlock = false;
         $tokenBlock = [];
         $stages = [];
-        
+
         foreach ($this->tokens as $token) {
             $stageParser = new StageParser($this);
             if (

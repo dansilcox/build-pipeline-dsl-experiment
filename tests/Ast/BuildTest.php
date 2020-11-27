@@ -6,6 +6,7 @@ namespace JoistTest\Ast;
 
 use Joist\Ast\Build;
 use Joist\Ast\FileHeader;
+use Joist\Ast\Stage\StageHeader;
 use Joist\Ast\Config\ConfigBlock;
 use Joist\Ast\Stage\Stage;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +20,7 @@ class BuildTest extends TestCase
         $fileHeader = new FileHeader($version);
         $configBlock = new ConfigBlock();
         $stages = [
-            new Stage('Test')
+            new Stage(new StageHeader('Test'))
         ];
         $build = new Build(
             $fileHeader,
